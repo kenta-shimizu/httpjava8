@@ -2,11 +2,11 @@ package httpBase;
 
 import java.net.SocketAddress;
 
-public class HttpServerConfig {
+public class AbstractHttpServerConfig {
 	
 	private SocketAddress serverAddress;
 	
-	public HttpServerConfig() {
+	public AbstractHttpServerConfig() {
 		this.serverAddress = null;
 	}
 	

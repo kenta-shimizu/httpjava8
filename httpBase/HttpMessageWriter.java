@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
-public abstract class HttpMessageWriter {
+public class HttpMessageWriter {
 	
 	private static final String CRLF = "\r\n";
 	private static final byte[] CRLFBYTES = CRLF.getBytes(StandardCharsets.US_ASCII);

@@ -2,9 +2,9 @@ package httpBase;
 
 import java.nio.ByteBuffer;
 
-public abstract class HttpMessageBodyReader {
+public abstract class AbstractHttpMessageBodyReader {
 	
-	public HttpMessageBodyReader() {
+	public AbstractHttpMessageBodyReader() {
 		/* Nothing */
 	}
 	

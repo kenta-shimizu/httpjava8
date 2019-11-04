@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class HttpHeaderGroup {
+public class HttpHeaderGroup implements Cloneable {
 	
 	private static final String CRLF = "\r\n";
 	
@@ -44,6 +44,35 @@ public class HttpHeaderGroup {
 		HttpHeaderGroup inst = new HttpHeaderGroup();
 		inst.lines = lines.stream().map(CharSequence::toString).collect(Collectors.toList());
 		return inst;
+	}
+	
+	@Override
+	public Object clone() {
+		
+		synchronized ( this ) {
+			
+			HttpHeaderGroup inst = new HttpHeaderGroup();
+			
+			if ( this.headers != null ) {
+				inst.headers = this.headers.stream()
+						.map(h -> ((HttpHeader)h.clone()))
+						.collect(Collectors.toList());
+			}
+			
+			if ( this.lines != null) {
+				inst.lines = Collections.unmodifiableList(this.lines);
+			}
+			
+			if ( this.parsedBytes != null ) {
+				inst.parsedBytes = this.parsedBytes;
+			}
+			
+			if ( this.parsedString != null ) {
+				inst.parsedString = this.parsedString;
+			}
+			
+			return inst;
+		}
 	}
 	
 	private static final String SP = " ";

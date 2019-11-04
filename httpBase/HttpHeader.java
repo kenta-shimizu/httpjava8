@@ -1,6 +1,6 @@
 package httpBase;
 
-public class HttpHeader {
+public class HttpHeader implements Cloneable {
 	
 	private static final String COLON = ":";
 	private static final String SP = " ";
@@ -23,6 +23,17 @@ public class HttpHeader {
 		this.fieldName = null;
 		this.fieldValue = null;
 		this.line = line.toString();
+	}
+	
+	@Override
+	public Object clone() {
+		
+		try {
+			return super.clone();
+		}
+		catch (CloneNotSupportedException e) {
+			throw new InternalError(e);
+		}
 	}
 	
 	public String fieldName() throws HttpMessageParseException {
@@ -81,4 +92,18 @@ public class HttpHeader {
 	private static String removeWhiteSpace(CharSequence v) {
 		return v.toString().trim().replaceAll("\\s+", SP);
 	}
+	
+	private static class SingletonHolder {
+		private static final HttpHeader connectionKeepAlive = new HttpHeader(HttpHeaderField.Connection, "Keep-Alive");
+		private static final HttpHeader connectionClose = new HttpHeader(HttpHeaderField.Connection, "close");
+	}
+	
+	public static HttpHeader connectionKeepAlive() {
+		return SingletonHolder.connectionKeepAlive;
+	}
+	
+	public static HttpHeader connectionClose() {
+		return SingletonHolder.connectionClose;
+	}
+	
 }

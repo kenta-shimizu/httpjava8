@@ -4,11 +4,11 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.net.SocketAddress;
 
-public abstract class HttpServer extends AbstractHttpTerminalEntity implements Closeable {
+public abstract class AbstractHttpServer extends AbstractHttpTerminalEntity implements Closeable {
 	
-	private final HttpServerConfig config;
+	private final AbstractHttpServerConfig config;
 	
-	public HttpServer(HttpServerConfig config) {
+	public AbstractHttpServer(AbstractHttpServerConfig config) {
 		super();
 		this.config = config;
 	}

@@ -1,15 +1,27 @@
 package httpBase;
 
+import java.util.Optional;
+
 public class HttpMessageBody {
 	
 	private byte[] body;
+	private HttpContentType contentType;
 	
 	public HttpMessageBody(byte[] body) {
 		this.body = body;
+		this.contentType = null;
 	}
 	
 	public byte[] getBytes() {
 		return body;
+	}
+	
+	public void contentType(HttpContentType contentType) {
+		this.contentType = contentType;
+	}
+	
+	public Optional<HttpContentType> contentType() {
+		return contentType == null ? Optional.empty() : Optional.of(contentType);
 	}
 	
 	public String toString() {

@@ -1,19 +1,15 @@
 package httpBase;
 
-import java.net.SocketAddress;
+import java.io.Closeable;
+import java.io.IOException;
 import java.util.Collection;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-public abstract class HttpClient extends AbstractHttpTerminalEntity {
+public abstract class AbstractHttpClient extends AbstractHttpTerminalEntity implements Closeable {
 	
-	private final HttpClientConfig config;
-	
-	public HttpClient(HttpClientConfig config) {
+	public AbstractHttpClient(AbstractHttpClientConfig config) {
 		super();
-		this.config = config;
 	}
-	
-	public abstract void request(HttpRequestMessage request);
 	
 	private final Collection<HttpResponseMessagePackListener> rspMsgPackListeners = new CopyOnWriteArrayList<>();
 	
@@ -31,8 +27,7 @@ public abstract class HttpClient extends AbstractHttpTerminalEntity {
 		});
 	}
 	
-	protected SocketAddress serverAddress() {
-		return config.serverAddress();
-	}
+	abstract public void request(HttpRequestMessage request) throws HttpWriteMessageException;
+	abstract public void open() throws IOException;
 	
 }
