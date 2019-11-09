@@ -1,9 +1,11 @@
 package httpUtil;
 
+import java.net.SocketAddress;
+
 import httpBase.HttpHeaderGroup;
 import httpBase.HttpMessageBody;
 import httpBase.HttpRequestLine;
-import httpBase.HttpRequestMessage;
+import httpBase.HttpRequestMessagePack;
 import httpBase.HttpVersion;
 
 public abstract class HttpRequestMessageBuilder {
@@ -12,8 +14,9 @@ public abstract class HttpRequestMessageBuilder {
 		/* Nothing */
 	}
 	
-	public HttpRequestMessage create(
-			CharSequence method
+	public HttpRequestMessagePack create(
+			SocketAddress hostSocketAddress
+			, CharSequence method
 			, CharSequence uri
 			, HttpHeaderGroup headerGroup
 			, HttpMessageBody body) {
@@ -23,13 +26,13 @@ public abstract class HttpRequestMessageBuilder {
 				+ " " + uri.toString()
 				+ " " + getHttpVersion().toString());
 		
-		return new HttpRequestMessage(requestLine, headerGroup, body);
+		return new HttpRequestMessagePack(hostSocketAddress, requestLine, headerGroup, body);
 	}
 	
 	abstract public HttpVersion getHttpVersion();
 	
-	abstract public HttpRequestMessage createGet(CharSequence absoluteUri) throws AbsoluteUriParseException;
-	abstract public HttpRequestMessage createHead(CharSequence absoluteUri) throws AbsoluteUriParseException;
-	abstract public HttpRequestMessage createPost(CharSequence absoluteUri, HttpMessageBody body) throws AbsoluteUriParseException;
+	abstract public HttpRequestMessagePack createGet(CharSequence absoluteUri) throws AbsoluteUriParseException;
+	abstract public HttpRequestMessagePack createHead(CharSequence absoluteUri) throws AbsoluteUriParseException;
+	abstract public HttpRequestMessagePack createPost(CharSequence absoluteUri, HttpMessageBody body) throws AbsoluteUriParseException;
 	
 }

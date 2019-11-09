@@ -27,7 +27,7 @@ public abstract class AbstractHttpClient extends AbstractHttpTerminalEntity impl
 		});
 	}
 	
-	abstract public void request(HttpRequestMessage request) throws HttpWriteMessageException;
+	abstract public void request(HttpRequestMessagePack request) throws InterruptedException, HttpWriteMessageException, HttpMessageParseException;
 	abstract public void open() throws IOException;
 	
 }

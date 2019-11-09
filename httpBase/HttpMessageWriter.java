@@ -3,6 +3,7 @@ package httpBase;
 import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.channels.AsynchronousSocketChannel;
+import java.nio.channels.ClosedChannelException;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.List;
@@ -17,19 +18,23 @@ public class HttpMessageWriter {
 	
 	private final AsynchronousSocketChannel channel;
 	
-	public HttpMessageWriter(AsynchronousSocketChannel channel) {
+	protected HttpMessageWriter(AsynchronousSocketChannel channel) {
 		this.channel = channel;
 	}
 	
-	public void write(HttpRequestMessage msg) throws InterruptedException, HttpWriteMessageException, HttpMessageParseException {
+	public static HttpMessageWriter get(AsynchronousSocketChannel channel) {
+		return new HttpMessageWriter(channel);
+	}
+	
+	public void write(HttpRequestMessage msg) throws InterruptedException, HttpWriteMessageClosedChannelException, HttpWriteMessageException, HttpMessageParseException {
 		write(msg.getBytes());
 	}
 	
-	public void write(HttpResponseMessage msg) throws InterruptedException, HttpWriteMessageException, HttpMessageParseException {
+	public void write(HttpResponseMessage msg) throws InterruptedException, HttpWriteMessageClosedChannelException, HttpWriteMessageException, HttpMessageParseException {
 		write(msg.getBytes());
 	}
 	
-	public void write(byte[] bs) throws InterruptedException, HttpWriteMessageException {
+	public void write(byte[] bs) throws InterruptedException, HttpWriteMessageClosedChannelException, HttpWriteMessageException {
 		
 		ByteBuffer buffer = ByteBuffer.allocate(bs.length);
 		buffer.put(bs);
@@ -38,11 +43,11 @@ public class HttpMessageWriter {
 		write(buffer);
 	}
 	
-	public void writeWithCrLf() throws InterruptedException, HttpWriteMessageException {
+	public void writeWithCrLf() throws InterruptedException, HttpWriteMessageClosedChannelException, HttpWriteMessageException {
 		writeWithCrLf(Collections.singletonList(new byte[0]));
 	}
 	
-	public void writeWithCrLf(List<byte[]> bss) throws InterruptedException, HttpWriteMessageException {
+	public void writeWithCrLf(List<byte[]> bss) throws InterruptedException, HttpWriteMessageClosedChannelException, HttpWriteMessageException {
 		
 		int size = bss.stream().mapToInt(bs -> bs.length + CRLFBYTESLENGTH).sum();
 		
@@ -57,7 +62,7 @@ public class HttpMessageWriter {
 		write(buffer);
 	}
 	
-	private boolean write(ByteBuffer buffer) throws InterruptedException, HttpWriteMessageException {
+	private void write(ByteBuffer buffer) throws InterruptedException, HttpWriteMessageClosedChannelException, HttpWriteMessageException {
 		
 		while ( buffer.hasRemaining() ) {
 			
@@ -67,10 +72,25 @@ public class HttpMessageWriter {
 				int w = f.get().intValue();
 				
 				if ( w <= 0 ) {
-					return false;
+					return;
 				}
 			}
 			catch ( ExecutionException e ) {
+				
+				Throwable t = e.getCause();
+				
+				if ( t instanceof ClosedChannelException ) {
+					throw new HttpWriteMessageClosedChannelException(t);
+				}
+				
+				if ( t instanceof RuntimeException ) {
+					throw (RuntimeException)t;
+				}
+				
+				if ( t instanceof Error ) {
+					throw (Error)t;
+				}
+				
 				throw new HttpWriteMessageException(e);
 			}
 			catch ( InterruptedException e ) {
@@ -78,7 +98,5 @@ public class HttpMessageWriter {
 				throw e;
 			}
 		}
-		
-		return true;
 	}
 }

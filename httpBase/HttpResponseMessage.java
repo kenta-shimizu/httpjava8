@@ -24,6 +24,18 @@ public class HttpResponseMessage {
 		this.parsedBytes = null;
 	}
 	
+	public HttpStatusLine statusLine() {
+		return statusLine;
+	}
+	
+	public HttpHeaderGroup headerGroup() {
+		return headerGroup;
+	}
+	
+	public HttpMessageBody body() {
+		return body;
+	}
+	
 	public byte[] getBytes() throws HttpMessageParseException {
 		
 		synchronized ( this ) {

@@ -58,7 +58,7 @@ public class HttpMessageChunkBodyReader extends AbstractHttpMessageBodyReader {
 						if ( bs.length == 0 ) {
 							
 							completed = true;
-							return true;
+							return completed;
 							
 						} else {
 							
@@ -107,7 +107,7 @@ public class HttpMessageChunkBodyReader extends AbstractHttpMessageBodyReader {
 					
 				} else {
 					
-					return false;
+					return completed;
 				}
 			}
 		}

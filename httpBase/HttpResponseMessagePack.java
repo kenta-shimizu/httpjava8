@@ -2,10 +2,10 @@ package httpBase;
 
 public class HttpResponseMessagePack extends HttpResponseMessage {
 	
-	private final HttpRequestMessage request;
+	private final HttpRequestMessagePack request;
 	
 	public HttpResponseMessagePack(
-			HttpRequestMessage request
+			HttpRequestMessagePack request
 			, HttpStatusLine statusLine, HttpHeaderGroup headerGroup, HttpMessageBody body) {
 		
 		super(statusLine, headerGroup, body);
@@ -13,7 +13,14 @@ public class HttpResponseMessagePack extends HttpResponseMessage {
 		this.request = request;
 	}
 	
-	public HttpRequestMessage requestMessage() {
+	public HttpResponseMessagePack(
+			HttpRequestMessagePack request
+			, HttpStatusLine statusLine, HttpHeaderGroup headerGroup) {
+		
+		this(request, statusLine, headerGroup, HttpMessageBody.empty());
+	}
+	
+	public HttpRequestMessagePack requestMessage() {
 		return request;
 	}
 	

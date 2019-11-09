@@ -1,5 +1,7 @@
 package httpBase;
 
+import java.nio.charset.StandardCharsets;
+
 public class HttpStatusLine {
 	
 	private static final String SP = " ";
@@ -25,6 +27,10 @@ public class HttpStatusLine {
 		this.statusCode = -1;
 		this.reasonPhrase = null;
 		this.line = line.toString();
+	}
+	
+	public HttpStatusLine(byte[] bs) {
+		this(new String(bs, StandardCharsets.US_ASCII));
 	}
 	
 	public HttpVersion version() throws HttpMessageParseException {

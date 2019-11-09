@@ -26,4 +26,8 @@ public abstract class AbstractHttpTerminalEntity {
 		});
 	}
 	
+	protected void putLog(Throwable t) {
+		putLog(new HttpLog(t));
+	}
+	
 }
