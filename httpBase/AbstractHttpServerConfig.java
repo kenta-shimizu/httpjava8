@@ -11,11 +11,15 @@ public class AbstractHttpServerConfig {
 	}
 	
 	public void serverAddress(SocketAddress address) {
-		this.serverAddress = address;
+		synchronized ( this ) {
+			this.serverAddress = address;
+		}
 	}
 	
 	public SocketAddress serverAddress() {
-		return this.serverAddress;
+		synchronized ( this ) {
+			return this.serverAddress;
+		}
 	}
 	
 }

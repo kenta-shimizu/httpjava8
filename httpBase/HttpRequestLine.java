@@ -1,5 +1,7 @@
 package httpBase;
 
+import java.nio.charset.StandardCharsets;
+
 public class HttpRequestLine {
 	
 	private static final String SP = " ";
@@ -21,6 +23,10 @@ public class HttpRequestLine {
 		this.uri = null;
 		this.version = null;
 		this.line = line.toString();
+	}
+	
+	public HttpRequestLine(byte[] bs) {
+		this(new String(bs, StandardCharsets.US_ASCII));
 	}
 	
 	public HttpMethod method() throws HttpMessageParseException {

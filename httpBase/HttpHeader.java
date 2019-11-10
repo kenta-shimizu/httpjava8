@@ -1,5 +1,7 @@
 package httpBase;
 
+import java.nio.charset.StandardCharsets;
+
 public class HttpHeader implements Cloneable {
 	
 	private static final String COLON = ":";
@@ -23,6 +25,10 @@ public class HttpHeader implements Cloneable {
 		this.fieldName = null;
 		this.fieldValue = null;
 		this.line = line.toString();
+	}
+	
+	public HttpHeader(byte[] bs) {
+		this(new String(bs, StandardCharsets.US_ASCII));
 	}
 	
 	@Override

@@ -11,7 +11,7 @@ public class HttpMessageBytesBodyReader extends AbstractHttpMessageBodyReader {
 	public HttpMessageBytesBodyReader(int length) {
 		super();
 		
-		this.os = new ByteArrayOutputStream(length);
+		this.os = new ByteArrayOutputStream(length > 0 ? length : 1);
 		this.length = length;
 	}
 
@@ -39,7 +39,7 @@ public class HttpMessageBytesBodyReader extends AbstractHttpMessageBodyReader {
 	@Override
 	public boolean completed() {
 		synchronized ( this ) {
-			return os.size() == length;
+			return os.size() >= length;
 		}
 	}
 
