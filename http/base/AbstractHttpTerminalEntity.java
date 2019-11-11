@@ -9,7 +9,6 @@ public abstract class AbstractHttpTerminalEntity {
 		/* Nothing */
 	}
 	
-	
 	private final Collection<HttpLogListener> logListeners = new CopyOnWriteArrayList<>();
 	
 	public boolean addLogListener(HttpLogListener lstnr) {
