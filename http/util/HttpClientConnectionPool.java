@@ -3,19 +3,39 @@ package http.util;
 import java.io.Closeable;
 import java.io.IOException;
 import java.net.SocketAddress;
-import java.nio.channels.AsynchronousSocketChannel;
-import java.nio.channels.ClosedChannelException;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
 
+import http.base.HttpLog;
+import http.base.HttpLogListener;
+import http.base.HttpResponseMessagePack;
+import http.base.HttpResponseMessagePackListener;
+
 public class HttpClientConnectionPool implements Closeable {
 	
-	private final Map<SocketAddress, AsynchronousSocketChannel[]> map = new HashMap<>();
+	private ExecutorService execServ = Executors.newCachedThreadPool(r -> {
+		Thread th = new Thread(r);
+		th.setDaemon(true);
+		return th;
+	});
+	
+	private final HttpResponseMessagePackListener reponseMsgListener = rspMsg -> {
+		putResponseMessagePack(rspMsg);
+	};
+	
+	private final HttpLogListener logListener = log -> {
+		putLog(log);
+	};
+	
+	private final Map<SocketAddress, HttpClientConnection[]> map = new HashMap<>();
 	
 	private final AtomicInteger autoNumber = new AtomicInteger(0);
 	
@@ -28,7 +48,7 @@ public class HttpClientConnectionPool implements Closeable {
 		this.closed = false;
 	}
 	
-	public AsynchronousSocketChannel get(SocketAddress addr)
+	public HttpClientConnection get(SocketAddress addr)
 			throws IOException, InterruptedException {
 		
 		synchronized ( this ) {
@@ -39,9 +59,9 @@ public class HttpClientConnectionPool implements Closeable {
 			
 			final int autoNum = getIndex();
 			
-			AsynchronousSocketChannel[] channels = map.computeIfAbsent(addr, x -> {
+			HttpClientConnection[] connections = map.computeIfAbsent(addr, x -> {
 				
-				AsynchronousSocketChannel[] vv = new AsynchronousSocketChannel[maxConnection];
+				HttpClientConnection[] vv = new HttpClientConnection[maxConnection];
 				
 				for ( int i = 0, m = vv.length; i < m; ++i ) {
 					vv[i] = null;
@@ -50,23 +70,24 @@ public class HttpClientConnectionPool implements Closeable {
 				return vv;
 			});
 			
-			AsynchronousSocketChannel channel = channels[autoNum];
+			HttpClientConnection connection = connections[autoNum];
 			
-			if ( channel != null ) {
+			if ( connection != null ) {
 				
-				if ( channel.isOpen() ) {
+				if ( connection.isOpen() ) {
 					
-					return channel;
+					return connection;
 					
 				} else {
 					
-					closeChannel(channel);
+					closeConnection(connection);
 				}
 			}
 			
-			channel = openChannel(addr);
-			channels[autoNum] = channel;
-			return channel;
+			connection = HttpClientConnection.get(addr, reponseMsgListener, execServ);
+			connection.addLogListener(logListener);
+			connections[autoNum] = connection;
+			return connection;
 		}
 	}
 	
@@ -86,20 +107,16 @@ public class HttpClientConnectionPool implements Closeable {
 			
 			IOException ioExcept = null;
 			
-			for ( AsynchronousSocketChannel[] channels : map.values() ) {
-				
-				for ( AsynchronousSocketChannel channel : channels ) {
-					
-					if ( channel != null ) {
-						
-						try {
-							staticCloseChannel(channel);
-						}
-						catch ( IOException e ) {
-							ioExcept = e;
-						}
+			try {
+				execServ.shutdown();
+				if ( ! execServ.awaitTermination(1L, TimeUnit.MILLISECONDS) ) {
+					execServ.shutdownNow();
+					if ( ! execServ.awaitTermination(5L, TimeUnit.SECONDS) ) {
+						ioExcept = new IOException("ExecutorService#shutdown failed");
 					}
 				}
+			}
+			catch ( InterruptedException ignore ) {
 			}
 			
 			map.clear();
@@ -110,91 +127,74 @@ public class HttpClientConnectionPool implements Closeable {
 		}
 	}
 	
-	private static AsynchronousSocketChannel openChannel(SocketAddress addr)
-			throws IOException, InterruptedException {
-		
-		AsynchronousSocketChannel channel = AsynchronousSocketChannel.open();
-		
-		Future<Void> f = channel.connect(addr);
-		
-		try {
-			f.get();
-			return channel;
-		}
-		catch ( InterruptedException e ) {
-			
-			f.cancel(true);
-			
-			try {
-				channel.close();
-			}
-			catch ( IOException giveup ) {
-			}
-			
-			throw e;
-		}
-		catch ( ExecutionException e ) {
-			
-			try {
-				channel.close();
-			}
-			catch ( IOException giveup ) {
-			}
-			
-			Throwable t = e.getCause();
-			
-			if ( t instanceof IOException ) {
-				throw (IOException)t;
-			}
-			
-			if ( t instanceof RuntimeException ) {
-				throw (RuntimeException)t;
-			}
-			
-			if ( t instanceof Error ) {
-				throw (Error)t;
-			}
-			
-			throw new IOException(e);
-		}
-	}
-	
-	public void closeChannel(AsynchronousSocketChannel channel) throws IOException {
+	public void closeConnection(HttpClientConnection connection) throws IOException {
 		
 		synchronized ( this ) {
 			
 			for ( SocketAddress addr : map.keySet() ) {
 				
-				AsynchronousSocketChannel[] channels = map.get(addr);
+				HttpClientConnection[] connections = map.get(addr);
 				
-				for ( int i = 0, m = channels.length; i < m ; ++i ) {
+				for ( int i = 0, m = connections.length; i < m ; ++i ) {
 					
-					if ( Objects.equals(channels[i], channel) ) {
+					if ( Objects.equals(connections[i], connection) ) {
 						
-						channels[i] = null;
+						connections[i] = null;
 						
-						if ( Stream.of(channels).allMatch(Objects::isNull) ) {
-							map.remove(addr);
-						}
+						connection.close();
 						
-						staticCloseChannel(channel);
-						
-						return ;
+						break;
 					}
+				}
+				
+				if ( Stream.of(connections)
+						.allMatch(c -> c == null ? true : (! c.isOpen()))
+						) {
+					
+					map.remove(addr);
 				}
 			}
 		}
 	}
 	
-	private static void staticCloseChannel(AsynchronousSocketChannel channel) throws IOException {
-		
-		try {
-			channel.shutdownOutput();
-		}
-		catch (ClosedChannelException ignore ) {
-		}
-		
-		channel.close();
+	
+	/*** Response Listener ***/
+	private final Collection<HttpResponseMessagePackListener> rspMsgPackListeners = new CopyOnWriteArrayList<>();
+	
+	public boolean addResponseMessagePackListener(HttpResponseMessagePackListener lstnr) {
+		return rspMsgPackListeners.add(lstnr);
 	}
 	
+	public boolean removeResponseMessagePackListener(HttpResponseMessagePackListener lstnr) {
+		return rspMsgPackListeners.remove(lstnr);
+	}
+	
+	protected void putResponseMessagePack(HttpResponseMessagePack msgPack) {
+		rspMsgPackListeners.forEach(lstnr -> {
+			lstnr.receive(msgPack);
+		});
+	}
+	
+	
+	/*** Logging ***/
+	private final Collection<HttpLogListener> logListeners = new CopyOnWriteArrayList<>();
+	
+	public boolean addLogListener(HttpLogListener lstnr) {
+		return logListeners.add(lstnr);
+	}
+	
+	public boolean removeLogListener(HttpLogListener lstnr) {
+		return logListeners.remove(lstnr);
+	}
+	
+	protected void putLog(HttpLog log) {
+		logListeners.forEach(lstnr -> {
+			lstnr.receive(log);
+		});
+	}
+	
+	protected void putLog(Throwable t) {
+		putLog(new HttpLog(t));
+	}
+
 }

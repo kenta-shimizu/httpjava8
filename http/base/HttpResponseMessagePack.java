@@ -20,6 +20,13 @@ public class HttpResponseMessagePack extends HttpResponseMessage {
 		this(request, statusLine, headerGroup, HttpMessageBody.empty());
 	}
 	
+	public HttpResponseMessagePack(
+			HttpRequestMessagePack request
+			, HttpResponseMessage response) {
+		
+		this(request, response.statusLine(), response.headerGroup(), response.body());
+	}
+	
 	public HttpRequestMessagePack requestMessage() {
 		return request;
 	}

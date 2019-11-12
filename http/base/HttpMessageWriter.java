@@ -26,11 +26,7 @@ public class HttpMessageWriter {
 		return new HttpMessageWriter(channel);
 	}
 	
-	public void write(HttpRequestMessage msg) throws InterruptedException, HttpWriteMessageClosedChannelException, HttpWriteMessageException, HttpMessageParseException {
-		write(msg.getBytes());
-	}
-	
-	public void write(HttpResponseMessage msg) throws InterruptedException, HttpWriteMessageClosedChannelException, HttpWriteMessageException, HttpMessageParseException {
+	public void write(AbstractHttpMessage msg) throws InterruptedException, HttpWriteMessageClosedChannelException, HttpWriteMessageException, HttpMessageParseException {
 		write(msg.getBytes());
 	}
 	

@@ -4,22 +4,16 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
-public class HttpRequestMessage {
-	
-	private static final String CRLF = "\r\n";
-	private static final byte[] CRLFBYTES = CRLF.getBytes(StandardCharsets.US_ASCII);
+public class HttpRequestMessage extends AbstractHttpMessage {
 	
 	private final HttpRequestLine requestLine;
-	private final HttpHeaderGroup headerGroup;
-	private final HttpMessageBody body;
 	
 	private String parsedString;
 	private byte[] parsedBytes;
 	
 	public HttpRequestMessage(HttpRequestLine requestLine, HttpHeaderGroup headerGroup, HttpMessageBody body) {
+		super(headerGroup, body);
 		this.requestLine = requestLine;
-		this.headerGroup = headerGroup;
-		this.body = body;
 		this.parsedString = null;
 		this.parsedBytes = null;
 	}
@@ -28,14 +22,7 @@ public class HttpRequestMessage {
 		return requestLine;
 	}
 	
-	public HttpHeaderGroup headerGroup() {
-		return headerGroup;
-	}
-	
-	public HttpMessageBody body() {
-		return body;
-	}
-	
+	@Override
 	public byte[] getBytes() throws HttpMessageParseException {
 		
 		synchronized ( this ) {
@@ -48,11 +35,11 @@ public class HttpRequestMessage {
 					os.write(requestLine.toString().getBytes(StandardCharsets.US_ASCII));
 					os.write(CRLFBYTES);
 					
-					os.write(headerGroup.getBytes());
+					os.write(headerGroup().getBytes());
 					
 					os.write(CRLFBYTES);
 					
-					os.write(body.getBytes());
+					os.write(body().getBytes());
 					
 					parsedBytes = os.toByteArray();
 				}
@@ -73,9 +60,9 @@ public class HttpRequestMessage {
 			if ( parsedString == null ) {
 				
 				parsedString = requestLine.toString() + CRLF
-						+ headerGroup.toString()
+						+ headerGroup().toString()
 						+ CRLF
-						+ body.toString();
+						+ body().toString();
 			}
 			
 			return parsedString;
