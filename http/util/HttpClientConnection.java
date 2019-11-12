@@ -104,7 +104,7 @@ public class HttpClientConnection implements Closeable {
 				}
 				catch ( InterruptedException ignore ) {
 				}
-				catch ( HttpReadMessageException e ) {
+				catch ( HttpReadMessageException | IOException e ) {
 					putLog(e);
 				}
 				
@@ -118,7 +118,7 @@ public class HttpClientConnection implements Closeable {
 		}
 	}
 	
-	private void reading() throws InterruptedException, HttpReadMessageException {
+	private void reading() throws InterruptedException, HttpReadMessageException, IOException {
 		
 		final ByteBuffer buffer = ByteBuffer.allocate(1024);
 		
@@ -145,10 +145,22 @@ public class HttpClientConnection implements Closeable {
 					
 					if ( op.isPresent() ) {
 						
+						HttpResponseMessage rsp = op.get();
+						
+						boolean keepAlive = rsp.keepAlive();
+						
+						if ( ! keepAlive ) {
+							close();
+						}
+						
 						HttpRequestMessagePack req = requestQueue.poll();
 						
 						if ( req != null ) {
-							reponseMsgListener.receive(new HttpResponseMessagePack(req, op.get()));
+							reponseMsgListener.receive(new HttpResponseMessagePack(req, rsp));
+						}
+						
+						if ( ! keepAlive ) {
+							return;
 						}
 						
 						reader = new HttpResponseMessageReader();

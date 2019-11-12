@@ -179,7 +179,11 @@ public class HttpServer extends AbstractHttpServer {
 					Optional<HttpRequestMessage> op = reader.put(buffer);
 					
 					if ( op.isPresent() ) {
-						writeResponseMessage(writer, op.get());
+						
+						if ( ! writeResponseMessage(writer, op.get()) ) {
+							return;
+						}
+						
 						reader = new HttpRequestMessageReader();
 					}
 				}
@@ -214,10 +218,22 @@ public class HttpServer extends AbstractHttpServer {
 		}
 	}
 	
-	protected void writeResponseMessage(HttpMessageWriter writer, HttpRequestMessage request)
+	/**
+	 * prototype
+	 * 
+	 * @param writer
+	 * @param request
+	 * @return true if KeepAlive
+	 * @throws InterruptedException
+	 * @throws HttpWriteMessageException
+	 * @throws HttpMessageParseException
+	 */
+	protected boolean writeResponseMessage(HttpMessageWriter writer, HttpRequestMessage request)
 			throws InterruptedException, HttpWriteMessageException, HttpMessageParseException {
 		
 		writer.write(HttpResponseMessageBuilders.get(HttpVersion.HTTP1_1).create(HttpStatus.INTERNAL_SERVER_ERROR));
+		
+		return false;
 	}
 
 }

@@ -22,6 +22,27 @@ public class HttpResponseMessage extends AbstractHttpMessage {
 		return statusLine;
 	}
 	
+	public boolean keepAlive() {
+		
+		try {
+			switch ( statusLine().version() ) {
+			case HTTP1_0:
+				return false;
+				/* break; */
+			
+			default: {
+				return headerGroup().getFieldValue(HttpHeaderField.Connection)
+						.filter(c -> c.equalsIgnoreCase("Keep-Alive"))
+						.isPresent();
+			}
+			}
+		}
+		catch ( HttpMessageParseException e ) {
+			return false;
+		}
+		
+	}
+	
 	public byte[] getBytes() throws HttpMessageParseException {
 		
 		synchronized ( this ) {
