@@ -5,8 +5,10 @@ import java.nio.ByteBuffer;
 import java.nio.channels.AsynchronousSocketChannel;
 import java.nio.channels.ClosedChannelException;
 import java.nio.charset.StandardCharsets;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
@@ -28,6 +30,7 @@ public class HttpMessageWriter {
 	
 	public void write(AbstractHttpMessage msg) throws InterruptedException, HttpWriteMessageClosedChannelException, HttpWriteMessageException, HttpMessageParseException {
 		write(msg.getBytes());
+		putWroteLog(msg);
 	}
 	
 	public void write(byte[] bs) throws InterruptedException, HttpWriteMessageClosedChannelException, HttpWriteMessageException {
@@ -95,4 +98,23 @@ public class HttpMessageWriter {
 			}
 		}
 	}
+	
+	
+	private final Collection<HttpLogListener> wroteLogListeners = new CopyOnWriteArrayList<>();
+	
+	public boolean addWroteLogListener(HttpLogListener lstnr) {
+		return wroteLogListeners.add(lstnr);
+	}
+	
+	public boolean removeWroteLogListener(HttpLogListener lstnr) {
+		return wroteLogListeners.remove(lstnr);
+	}
+	
+	protected void putWroteLog(AbstractHttpMessage msg) {
+		HttpLog log = new HttpLog("Message wrote", msg);
+		wroteLogListeners.forEach(lstnr -> {
+			lstnr.receive(log);
+		});
+	}
+
 }

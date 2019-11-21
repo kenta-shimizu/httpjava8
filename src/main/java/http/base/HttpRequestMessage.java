@@ -3,6 +3,9 @@ package http.base;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class HttpRequestMessage extends AbstractHttpMessage {
 	
@@ -53,6 +56,21 @@ public class HttpRequestMessage extends AbstractHttpMessage {
 	}
 	
 	@Override
+	public boolean isKeepAlive() {
+		
+		try {
+			return headerGroup()
+					.getFieldValue(HttpHeaderField.Connection)
+					.filter(v -> v.equalsIgnoreCase("Keep-Alive"))
+					.isPresent();
+		}
+		catch ( HttpMessageParseException giveup ) {
+		}
+		
+		return false;
+	}
+	
+	@Override
 	public String toString() {
 		
 		synchronized ( this ) {
@@ -69,4 +87,36 @@ public class HttpRequestMessage extends AbstractHttpMessage {
 		}
 	}
 	
+	public List<String> acceptEncodings() {
+		
+		try {
+			return headerGroup().getFieldValue(HttpHeaderField.AcceptEncoding)
+					.map(v -> {
+						
+						/*** HOOK ***/
+						
+						String[] ss = v.split(",");
+						
+						List<String> ll = new ArrayList<>();
+						
+						for ( String s : ss ) {
+							
+							String[] tt = s.split(";");
+							
+							String t = tt[0].trim();
+							
+							if ( ! t.isEmpty() ) {
+								ll.add(t);
+							}
+						}
+						
+						return ll;
+					})
+					.orElse(Collections.emptyList());
+		}
+		catch ( HttpMessageParseException giveup ) {
+		}
+		
+		return Collections.emptyList();
+	}
 }

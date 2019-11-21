@@ -1,8 +1,6 @@
 package http.util;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -23,9 +21,6 @@ public class HttpClient extends AbstractHttpClient {
 	
 	private final HttpClientConnectionPool connectionPool;
 	
-	private boolean opened;
-	private boolean closed;
-	
 	public HttpClient(HttpClientConfig config) {
 		super(config);
 		
@@ -38,48 +33,33 @@ public class HttpClient extends AbstractHttpClient {
 		this.connectionPool.addLogListener(log -> {
 			putLog(log);
 		});
-		
-		this.opened = false;
-		this.closed = false;
-	}
-	
-	@Override
-	public void open() throws IOException {
-		
-		synchronized ( this ) {
-			
-			if ( closed ) {
-				throw new IOException("Already closed");
-			}
-			
-			if ( opened ) {
-				throw new IOException("Already opened");
-			}
-			
-			opened = true;
-		}
 	}
 	
 	@Override
 	public void close() throws IOException {
 		
+		IOException ioExcept = null;
+		
 		synchronized ( this ) {
 			
-			if ( closed ) {
-				return ;
+			try {
+				super.close();
+			}
+			catch ( IOException e ) {
+				ioExcept = e;
 			}
 			
-			closed = true;
+			if ( isClosed() ) {
+				return;
+			}
 		}
-		
-		List<IOException> ioExcepts = new ArrayList<>();
 		
 		try {
 			execServ.shutdown();
 			if ( ! execServ.awaitTermination(1L, TimeUnit.MILLISECONDS) ) {
 				execServ.shutdownNow();
 				if ( ! execServ.awaitTermination(5L, TimeUnit.SECONDS) ) {
-					ioExcepts.add(new IOException("ExecutorService#shutdownNow failed"));
+					ioExcept = new IOException("ExecutorService#shutdownNow failed");
 				}
 			}
 		}
@@ -90,11 +70,11 @@ public class HttpClient extends AbstractHttpClient {
 			connectionPool.close();
 		}
 		catch ( IOException e ) {
-			ioExcepts.add(e);
+			ioExcept = e;
 		}
 		
-		if ( ! ioExcepts.isEmpty() ) {
-			throw ioExcepts.get(0);
+		if ( ioExcept != null ) {
+			throw ioExcept;
 		}
 	}
 	
@@ -106,11 +86,11 @@ public class HttpClient extends AbstractHttpClient {
 		
 		synchronized ( this ) {
 			
-			if ( closed ) {
+			if ( isClosed() ) {
 				throw new HttpWriteMessageException("Already closed");
 			}
 			
-			if ( ! opened ) {
+			if ( ! isOpen() ) {
 				throw new HttpWriteMessageException("not opened");
 			}
 		}

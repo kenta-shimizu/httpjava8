@@ -1,11 +1,9 @@
 package http.base;
 
-import java.io.Closeable;
-import java.io.IOException;
 import java.util.Collection;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-public abstract class AbstractHttpClient extends AbstractHttpTerminalEntity implements Closeable {
+public abstract class AbstractHttpClient extends AbstractHttpTerminalEntity {
 	
 	public AbstractHttpClient(AbstractHttpClientConfig config) {
 		super();
@@ -28,6 +26,5 @@ public abstract class AbstractHttpClient extends AbstractHttpTerminalEntity impl
 	}
 	
 	abstract public void request(HttpRequestMessagePack request) throws InterruptedException, HttpWriteMessageException, HttpMessageParseException;
-	abstract public void open() throws IOException;
 	
 }

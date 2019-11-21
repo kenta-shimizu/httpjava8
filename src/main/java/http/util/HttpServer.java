@@ -12,12 +12,17 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import http.base.AbstractHttpServer;
+import http.base.HttpKeepAliveValue;
+import http.base.HttpLog;
 import http.base.HttpMessageParseException;
 import http.base.HttpMessageWriter;
 import http.base.HttpReadMessageException;
 import http.base.HttpRequestMessage;
+import http.base.HttpServerConnectionValue;
+import http.base.HttpServerServiceSupplier;
 import http.base.HttpStatus;
 import http.base.HttpVersion;
 import http.base.HttpWriteMessageException;
@@ -36,14 +41,38 @@ public class HttpServer extends AbstractHttpServer {
 	
 	private final HttpServerConfig config;
 	
+	private final HttpServerServiceSupplier generalService;
+	
 	public HttpServer(HttpServerConfig config) {
 		super(config);
 		
 		this.config = config;
+		
+		if ( config.generalFileServerServiceConfig().serverRoot().isPresent() ) {
+			
+			generalService = new HttpGeneralFileServerService(config.generalFileServerServiceConfig());
+			
+		} else {
+			
+			generalService = new HttpServerServiceSupplier() {
+				
+				@Override
+				public boolean accept(HttpRequestMessage request) {
+					return false;
+				}
+				
+				@Override
+				public boolean tryService(HttpMessageWriter writer, HttpRequestMessage request, HttpServerConnectionValue connectionValue) {
+					return false;
+				}
+			};
+		}
 	}
 	
 	@Override
 	public void open() throws IOException {
+		
+		super.open();
 		
 		execServ.execute(() -> {
 			
@@ -154,8 +183,13 @@ public class HttpServer extends AbstractHttpServer {
 			, HttpWriteMessageException
 			, HttpMessageParseException {
 		
+		final HttpKeepAliveValue keepAliveValue = createKeepAliveValue();
+		final HttpServerConnectionValue connectionValue = new HttpServerConnectionValue(channel, keepAliveValue);
+		
 		final ByteBuffer buffer = ByteBuffer.allocate(1024);
+		
 		final HttpMessageWriter writer = HttpMessageWriter.get(channel);
+		writer.addWroteLogListener(this::putResponseLog);
 		
 		HttpRequestMessageReader reader = new HttpRequestMessageReader();
 		
@@ -166,7 +200,7 @@ public class HttpServer extends AbstractHttpServer {
 			Future<Integer> f = channel.read(buffer);
 					
 			try {
-				int r = f.get().intValue();
+				int r = f.get(keepAliveValue.timeout(), TimeUnit.SECONDS).intValue();
 				
 				if ( r < 0 ) {
 					return;
@@ -178,9 +212,11 @@ public class HttpServer extends AbstractHttpServer {
 					
 					Optional<HttpRequestMessage> op = reader.put(buffer);
 					
+					op.ifPresent(this::putAccessLog);
+					
 					if ( op.isPresent() ) {
 						
-						if ( ! writeResponseMessage(writer, op.get()) ) {
+						if ( ! writeResponseMessage(writer, op.get(), connectionValue) ) {
 							return;
 						}
 						
@@ -192,6 +228,10 @@ public class HttpServer extends AbstractHttpServer {
 				f.cancel(true);
 				throw e;
 			}
+			catch ( TimeoutException e ) {
+				f.cancel(true);
+				return;
+			}
 		}
 	}
 	
@@ -199,6 +239,20 @@ public class HttpServer extends AbstractHttpServer {
 	public void close() throws IOException {
 		
 		IOException ioExcept = null;
+		
+		synchronized ( this ) {
+			
+			try {
+				super.close();
+				
+				if ( isClosed() ) {
+					return;
+				}
+			}
+			catch ( IOException e ) {
+				ioExcept = e;
+			}
+		}
 		
 		try {
 			execServ.shutdown();
@@ -219,21 +273,36 @@ public class HttpServer extends AbstractHttpServer {
 	}
 	
 	/**
-	 * prototype
 	 * 
 	 * @param writer
 	 * @param request
-	 * @return true if KeepAlive
+	 * @param connectionValue
+	 * @return true if Keep-Alive
 	 * @throws InterruptedException
 	 * @throws HttpWriteMessageException
 	 * @throws HttpMessageParseException
 	 */
-	protected boolean writeResponseMessage(HttpMessageWriter writer, HttpRequestMessage request)
-			throws InterruptedException, HttpWriteMessageException, HttpMessageParseException {
+	protected boolean writeResponseMessage(
+			HttpMessageWriter writer
+			, HttpRequestMessage request
+			, HttpServerConnectionValue connectionValue)
+					throws InterruptedException
+					, HttpWriteMessageException
+					, HttpMessageParseException {
 		
-		writer.write(HttpResponseMessageBuilders.get(HttpVersion.HTTP1_1).create(HttpStatus.INTERNAL_SERVER_ERROR));
+		if ( generalService.accept(request) ) {
+			return generalService.tryService(writer, request, connectionValue);
+		}
 		
+		writer.write(HttpResponseMessageBuilders.get(HttpVersion.HTTP1_1).build(HttpStatus.INTERNAL_SERVER_ERROR));
 		return false;
 	}
-
+	
+	protected HttpKeepAliveValue createKeepAliveValue() {
+		return new HttpKeepAliveValue(config.keepAliveTimeout(), config.keepAliveMax());
+	}
+	
+	protected void putAccessLog(HttpRequestMessage msg) {
+		putAccessLog(new HttpLog("Message accept", msg));
+	}
 }

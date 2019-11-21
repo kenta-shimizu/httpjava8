@@ -11,27 +11,27 @@ import http.base.HttpMessageBody;
 import http.base.HttpResponseMessage;
 import http.base.HttpVersion;
 
-public class HttpResponseMessageBuilderVersion1p0 extends HttpResponseMessageBuilder {
+public class HttpResponseMessageBuilderVersion1p1 extends HttpResponseMessageBuilder {
 
-	public HttpResponseMessageBuilderVersion1p0() {
+	public HttpResponseMessageBuilderVersion1p1() {
 		super();
 	}
 
 	@Override
 	protected HttpVersion getHttpVersion() {
-		return HttpVersion.HTTP1_0;
+		return HttpVersion.HTTP1_1;
 	}
 
 	@Override
-	public HttpResponseMessage createOkResponse(HttpMessageBody body) {
-		return createOkResponse(createHeaderGroup(body), body);
+	public HttpResponseMessage buildOkResponse(HttpMessageBody body) {
+		return buildOkResponse(createHeaderGroup(body), body);
 	}
 
 	@Override
-	public HttpResponseMessage createOkHeadResponse(HttpMessageBody body) {
-		return createOkHeadResponse(createHeaderGroup(body));
+	public HttpResponseMessage buildOkHeadResponse(HttpMessageBody body) {
+		return buildOkHeadResponse(createHeaderGroup(body));
 	}
-	
+
 	private HttpHeaderGroup createHeaderGroup(HttpMessageBody body) {
 		
 		List<HttpHeader> headers = new ArrayList<>();
@@ -49,4 +49,5 @@ public class HttpResponseMessageBuilderVersion1p0 extends HttpResponseMessageBui
 		
 		return HttpHeaderGroup.create(headers);
 	}
+
 }

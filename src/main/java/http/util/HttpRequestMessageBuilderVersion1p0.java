@@ -11,15 +11,15 @@ import http.base.HttpMethod;
 import http.base.HttpRequestMessagePack;
 import http.base.HttpVersion;
 
-public class HttpRequestMessageBuilderVersion1p1 extends HttpRequestMessageBuilder {
+public class HttpRequestMessageBuilderVersion1p0 extends HttpRequestMessageBuilder {
 
-	public HttpRequestMessageBuilderVersion1p1() {
+	public HttpRequestMessageBuilderVersion1p0() {
 		super();
 	}
 	
 	@Override
 	public HttpVersion getHttpVersion() {
-		return HttpVersion.HTTP1_1;
+		return HttpVersion.HTTP1_0;
 	}
 	
 	private AbsoluteUriParseResult parseUri(CharSequence absoluteUri) throws AbsoluteUriParseException {
@@ -27,53 +27,41 @@ public class HttpRequestMessageBuilderVersion1p1 extends HttpRequestMessageBuild
 	}
 	
 	@Override
-	public HttpRequestMessagePack createGet(CharSequence absoluteUri) throws AbsoluteUriParseException {
+	public HttpRequestMessagePack buildGet(CharSequence absoluteUri) throws AbsoluteUriParseException {
 		
 		AbsoluteUriParseResult r = parseUri(absoluteUri);
 		
-		List<HttpHeader> headers = Arrays.asList(
-				new HttpHeader(HttpHeaderField.Host, r.headerHost())
-				, HttpHeader.connectionKeepAlive()
-				);
-		
-		return this.create(
+		return this.build(
 				r.serverSocketAddress()
 				, HttpMethod.GET.toString()
 				, r.requestLineUri()
-				, HttpHeaderGroup.create(headers)
+				, HttpHeaderGroup.empty()
 				, HttpMessageBody.empty());
 	}
-	
+
 	@Override
-	public HttpRequestMessagePack createHead(CharSequence absoluteUri) throws AbsoluteUriParseException {
+	public HttpRequestMessagePack buildHead(CharSequence absoluteUri) throws AbsoluteUriParseException {
 		
 		AbsoluteUriParseResult r = parseUri(absoluteUri);
 		
-		List<HttpHeader> headers = Arrays.asList(
-				new HttpHeader(HttpHeaderField.Host, r.headerHost())
-				, HttpHeader.connectionKeepAlive()
-				);
-		
-		return this.create(
+		return this.build(
 				r.serverSocketAddress()
 				, HttpMethod.HEAD.toString()
 				, r.requestLineUri()
-				, HttpHeaderGroup.create(headers)
+				, HttpHeaderGroup.empty()
 				, HttpMessageBody.empty());
 	}
-	
+
 	@Override
-	public HttpRequestMessagePack createPost(CharSequence absoluteUri, HttpMessageBody body) throws AbsoluteUriParseException {
+	public HttpRequestMessagePack buildPost(CharSequence absoluteUri, HttpMessageBody body) throws AbsoluteUriParseException {
 		
 		AbsoluteUriParseResult r = parseUri(absoluteUri);
 		
 		List<HttpHeader> headers = Arrays.asList(
-				new HttpHeader(HttpHeaderField.Host, r.headerHost())
-				, HttpHeader.connectionKeepAlive()
-				, new HttpHeader(HttpHeaderField.ContentLength, String.valueOf(body.getBytes().length))
+				new HttpHeader(HttpHeaderField.ContentLength, String.valueOf(body.getBytes().length))
 				);
 		
-		return this.create(
+		return this.build(
 				r.serverSocketAddress()
 				, HttpMethod.POST.toString()
 				, r.requestLineUri()

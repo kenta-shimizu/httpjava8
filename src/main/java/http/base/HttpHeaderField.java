@@ -5,12 +5,15 @@ public enum HttpHeaderField {
 	UNKNOWN(""),
 	
 	AcceptEncoding("Accept-Encoding"),
+	AcceptRanges("Accept-Ranges"),
 	Connection("Connection"),
 	ContentEncoding("Content-Encoding"),
 	ContentLength("Content-Length"),
 	ContentType("Content-Type"),
+	Date("Date"),
 	Host("Host"),
 	KeepAlive("Keep-Alive"),
+	LastModified("Last-Modified"),
 	Server("Server"),
 	TransferEncoding("Transfer-Encoding"),
 	

@@ -73,6 +73,21 @@ public class HttpResponseMessage extends AbstractHttpMessage {
 	}
 	
 	@Override
+	public boolean isKeepAlive() {
+		
+		try {
+			return headerGroup()
+					.getFieldValue(HttpHeaderField.Connection)
+					.filter(v -> v.equalsIgnoreCase("Keep-Alive"))
+					.isPresent();
+		}
+		catch ( HttpMessageParseException giveup ) {
+		}
+		
+		return false;
+	}
+	
+	@Override
 	public String toString() {
 		
 		synchronized ( this ) {

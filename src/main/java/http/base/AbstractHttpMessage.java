@@ -24,5 +24,5 @@ public abstract class AbstractHttpMessage {
 	}
 	
 	abstract public byte[] getBytes() throws HttpMessageParseException;
-	
+	abstract public boolean isKeepAlive();
 }

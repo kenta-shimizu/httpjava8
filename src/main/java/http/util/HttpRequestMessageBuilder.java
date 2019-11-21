@@ -14,7 +14,7 @@ public abstract class HttpRequestMessageBuilder {
 		/* Nothing */
 	}
 	
-	public HttpRequestMessagePack create(
+	public HttpRequestMessagePack build(
 			SocketAddress hostSocketAddress
 			, CharSequence method
 			, CharSequence uri
@@ -31,8 +31,8 @@ public abstract class HttpRequestMessageBuilder {
 	
 	abstract public HttpVersion getHttpVersion();
 	
-	abstract public HttpRequestMessagePack createGet(CharSequence absoluteUri) throws AbsoluteUriParseException;
-	abstract public HttpRequestMessagePack createHead(CharSequence absoluteUri) throws AbsoluteUriParseException;
-	abstract public HttpRequestMessagePack createPost(CharSequence absoluteUri, HttpMessageBody body) throws AbsoluteUriParseException;
+	abstract public HttpRequestMessagePack buildGet(CharSequence absoluteUri) throws AbsoluteUriParseException;
+	abstract public HttpRequestMessagePack buildHead(CharSequence absoluteUri) throws AbsoluteUriParseException;
+	abstract public HttpRequestMessagePack buildPost(CharSequence absoluteUri, HttpMessageBody body) throws AbsoluteUriParseException;
 	
 }

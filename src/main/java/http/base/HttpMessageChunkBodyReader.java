@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class HttpMessageChunkBodyReader extends AbstractHttpMessageBodyReader {
+public class HttpMessageChunkBodyReader implements HttpMessageBodyReadable {
 	
 	private final ByteArrayOutputStream os;
 	private final List<byte[]> lines;

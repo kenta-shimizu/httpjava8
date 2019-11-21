@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import http.base.AbstractHttpMessageBodyReader;
+import http.base.HttpMessageBodyReadable;
 import http.base.CrLfLineReader;
 import http.base.HttpHeaderField;
 import http.base.HttpHeaderGroup;
@@ -24,7 +24,7 @@ public class HttpRequestMessageReader {
 	private HttpRequestLine requestLine;
 	private final List<String> headers = new ArrayList<>();
 	private HttpHeaderGroup headerGroup;
-	private AbstractHttpMessageBodyReader bodyReader;
+	private HttpMessageBodyReadable bodyReader;
 	
 	public HttpRequestMessageReader() {
 		requestLine = null;
@@ -88,7 +88,7 @@ public class HttpRequestMessageReader {
 		}
 	}
 	
-	private AbstractHttpMessageBodyReader createBodyReader() throws HttpMessageParseException {
+	private HttpMessageBodyReadable createBodyReader() throws HttpMessageParseException {
 		
 		{
 			Optional<String> op = headerGroup.getFieldValue(HttpHeaderField.TransferEncoding);

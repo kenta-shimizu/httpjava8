@@ -3,6 +3,7 @@ package http.util;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,6 +15,7 @@ public class QueryParser {
 	
 	private static class SingletonHolder {
 		private static final QueryParser inst = new QueryParser();
+		private static final QueryParseResult empty = new QueryParseResult(Collections.emptyMap());
 	}
 	
 	public static QueryParser getInstance() {
@@ -53,5 +55,9 @@ public class QueryParser {
 		}
 		
 		return new QueryParseResult(map);
+	}
+	
+	public QueryParseResult empty() {
+		return SingletonHolder.empty;
 	}
 }

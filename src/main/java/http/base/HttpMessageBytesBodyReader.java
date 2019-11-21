@@ -3,7 +3,7 @@ package http.base;
 import java.io.ByteArrayOutputStream;
 import java.nio.ByteBuffer;
 
-public class HttpMessageBytesBodyReader extends AbstractHttpMessageBodyReader {
+public class HttpMessageBytesBodyReader implements HttpMessageBodyReadable {
 	
 	private final ByteArrayOutputStream os;
 	private final int length;
