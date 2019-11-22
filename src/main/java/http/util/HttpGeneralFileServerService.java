@@ -5,12 +5,13 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.FileTime;
-import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.zip.Deflater;
 import java.util.zip.GZIPOutputStream;
 
 import http.base.HttpContentType;
@@ -29,6 +30,8 @@ import http.base.HttpVersion;
 import http.base.HttpWriteMessageException;
 
 public class HttpGeneralFileServerService extends HttpServerService {
+	
+	private static final int ByteArrayOutputStreamSize = 256 * 64;
 	
 	private final DateTimeFormatter rfc1123Formatter = DateTimeFormatter.RFC_1123_DATE_TIME;
 	
@@ -170,12 +173,12 @@ public class HttpGeneralFileServerService extends HttpServerService {
 		
 		if ( config.addTimestamps() ) {
 			
-			LocalDateTime date = LocalDateTime.now();
-			headers.add(new HttpHeader(HttpHeaderField.Date, rfc1123Formatter.format(date)));
+			ZonedDateTime date = ZonedDateTime.now(ZoneId.of("UTC"));
+			headers.add(new HttpHeader(HttpHeaderField.Date, date.format(rfc1123Formatter)));
 			
 			FileTime ft = Files.getLastModifiedTime(path);
-			LocalDateTime lmt = LocalDateTime.ofInstant(ft.toInstant(), ZoneId.systemDefault());
-			headers.add(new HttpHeader(HttpHeaderField.LastModified, rfc1123Formatter.format(lmt)));
+			ZonedDateTime lmt = ZonedDateTime.ofInstant(ft.toInstant(), ZoneId.of("UTC"));
+			headers.add(new HttpHeader(HttpHeaderField.LastModified, lmt.format(rfc1123Formatter)));
 		}
 		
 		headers.addAll(createKeepAliveHeaders(request, connectionValue));
@@ -244,7 +247,7 @@ public class HttpGeneralFileServerService extends HttpServerService {
 		hh.add(new HttpHeader(HttpHeaderField.ContentEncoding, "gzip"));
 		
 		try (
-				ByteArrayOutputStream baos = new ByteArrayOutputStream();
+				ByteArrayOutputStream baos = new ByteArrayOutputStream(ByteArrayOutputStreamSize);
 				) {
 			
 			try (
@@ -258,17 +261,45 @@ public class HttpGeneralFileServerService extends HttpServerService {
 		}
 	}
 	
-	protected HttpResponseMessage createDeflateResponseMessage(byte[] body, List<HttpHeader> headers, HttpMethod method) {
+	protected HttpResponseMessage createDeflateResponseMessage(byte[] body, List<HttpHeader> headers, HttpMethod method) throws IOException {
 		
 		List<HttpHeader> hh = new ArrayList<>(headers);
 		
 		hh.add(new HttpHeader(HttpHeaderField.ContentEncoding, "deflate"));
 		
-		//TODO
-		//HOOK
-		//zlib
+		final Deflater comp = new Deflater();
 		
-		return createIdentityResponseMessage(body, headers, method);
+		try {
+			
+			comp.setInput(body);
+			comp.finish();
+			
+			byte[] bs = new byte[4096];
+			
+			try (
+					ByteArrayOutputStream baos = new ByteArrayOutputStream(ByteArrayOutputStreamSize);
+					) {
+				
+				for ( ;; ) {
+					
+					int len = comp.deflate(bs);
+					
+					if ( len > 0 ) {
+						
+						baos.write(bs, 0, len);
+						
+					} else {
+						
+						break;
+					}
+				}
+				
+				return createBaseResponseMessage(baos.toByteArray(), hh, method);
+			}
+		}
+		finally {
+			comp.end();
+		}
 	}
 	
 	protected HttpResponseMessage createBaseResponseMessage(byte[] body, List<HttpHeader> headers, HttpMethod method) {

@@ -131,8 +131,6 @@ public class HttpServer extends AbstractHttpServer {
 						}
 						catch ( Throwable t ) {
 							
-							putLog(t);
-							
 							if ( t instanceof RuntimeException ) {
 								throw (RuntimeException)t;
 							}
@@ -140,6 +138,8 @@ public class HttpServer extends AbstractHttpServer {
 							if ( t instanceof Error ) {
 								throw (Error)t;
 							}
+							
+							putLog(t);
 						}
 						finally {
 							
