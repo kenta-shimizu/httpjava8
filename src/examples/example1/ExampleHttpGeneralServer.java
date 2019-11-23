@@ -1,4 +1,4 @@
-package example;
+package example1;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -7,9 +7,9 @@ import java.nio.file.Paths;
 import http.util.HttpServer;
 import http.util.HttpServerConfig;
 
-public class Example1HttpGeneralServer {
+public class ExampleHttpGeneralServer {
 
-	public Example1HttpGeneralServer() {
+	public ExampleHttpGeneralServer() {
 		/* Nothing */
 	}
 	
@@ -32,8 +32,8 @@ public class Example1HttpGeneralServer {
 			
 			server.open();
 			
-			synchronized ( Example1HttpGeneralServer.class ) {
-				Example1HttpGeneralServer.class.wait();
+			synchronized ( ExampleHttpGeneralServer.class ) {
+				ExampleHttpGeneralServer.class.wait();
 			}
 		}
 		catch ( InterruptedException ignore ) {

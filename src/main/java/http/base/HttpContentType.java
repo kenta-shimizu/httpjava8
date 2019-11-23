@@ -1,5 +1,6 @@
 package http.base;
 
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.stream.Collectors;
@@ -12,7 +13,10 @@ public class HttpContentType {
 	
 	public HttpContentType(CharSequence contentType, CharSequence... extensions) {
 		this.contentType = contentType.toString();
-		this.extensions = Stream.of(extensions).map(CharSequence::toString).collect(Collectors.toList());
+		this.extensions = Stream.of(extensions)
+				.map(CharSequence::toString)
+				.map(s -> "." + s)
+				.collect(Collectors.toList());
 	}
 	
 	public String contentType() {
@@ -61,15 +65,19 @@ public class HttpContentType {
 		}
 	}
 	
-	public static HttpContentType get(CharSequence extension) {
+	public static HttpContentType get(Path path) {
+		return get(path.toString());
+	}
+	
+	public static HttpContentType get(CharSequence fileName) {
 		
-		String s = extension.toString();
+		String s = fileName.toString().toLowerCase();
 		
 		for ( HttpContentType t : SingletonHolder.inst ) {
 			
 			for ( String ext : t.extensions ) {
 				
-				if ( ext.equalsIgnoreCase(s) ) {
+				if ( s.endsWith(ext) ) {
 					
 					return t;
 				}

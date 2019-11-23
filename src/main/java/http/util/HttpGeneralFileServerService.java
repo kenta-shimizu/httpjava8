@@ -119,6 +119,10 @@ public class HttpGeneralFileServerService extends HttpServerService {
 			throw new HttpMessageParseException("AbsolutePath length < 1");
 		}
 		
+		if ( absPath.indexOf("..") >= 0 ) {
+			throw new HttpMessageParseException("AbsolutePath include \"..\"");
+		}
+		
 		Path path = config.serverRoot()
 				.map(p -> {
 					
@@ -183,14 +187,9 @@ public class HttpGeneralFileServerService extends HttpServerService {
 		
 		headers.addAll(createKeepAliveHeaders(request, connectionValue));
 		
-		{
-			String[] exts = path.getFileName().toString().split("\\.");
-			String ext = exts[exts.length - 1];
-			
-			headers.add(new HttpHeader(
-					HttpHeaderField.ContentType
-					, HttpContentType.get(ext).contentType()));
-		}
+		headers.add(new HttpHeader(
+				HttpHeaderField.ContentType
+				, HttpContentType.get(path).contentType()));
 		
 		byte[] bs = Files.readAllBytes(path);
 		
