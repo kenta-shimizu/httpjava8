@@ -2,7 +2,7 @@
 
 ## Introduction
 
-This library is template of Java8+ only Http Server.  
+This library is template of Http Server that runs only on Java8+.  
 Use to create simple API HTTP Server.
 
 
@@ -10,25 +10,17 @@ Use to create simple API HTTP Server.
 
 ### Open General HTTP Server
 
-```
-    XX
-    XXX
-    XXXX
+see "/src/examples/example1/ExampleHttpGeneralServer.java"
 
-```
 
 
 ### Create API HTTP Server
 
-```
-    YYY
-    YYYY
-    YYYYY
+see "/src/examples/example2/ExampleHttpApiServer.java"
 
-```
 
 
 ## for HTTP  Client
 
-Use Java11+ "java.net.http.HttpClient" or recommend other library.
+Use "java.net.http.HttpClient" on Java11+ or recommend other library.
 

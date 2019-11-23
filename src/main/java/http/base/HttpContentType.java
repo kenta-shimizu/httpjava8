@@ -15,11 +15,15 @@ public class HttpContentType {
 		this.contentType = contentType.toString();
 		this.extensions = Stream.of(extensions)
 				.map(CharSequence::toString)
-				.map(s -> "." + s)
 				.collect(Collectors.toList());
 	}
 	
 	public String contentType() {
+		return contentType;
+	}
+	
+	@Override
+	public String toString() {
 		return contentType;
 	}
 	
@@ -66,21 +70,35 @@ public class HttpContentType {
 	}
 	
 	public static HttpContentType get(Path path) {
-		return get(path.toString());
-	}
-	
-	public static HttpContentType get(CharSequence fileName) {
 		
-		String s = fileName.toString().toLowerCase();
+		final String s = path.toString().toLowerCase();
 		
 		for ( HttpContentType t : SingletonHolder.inst ) {
 			
-			for ( String ext : t.extensions ) {
+			if ( t.extensions.stream()
+					.map(String::toLowerCase)
+					.map(ext -> "." + ext)
+					.anyMatch(ext -> s.endsWith(ext))
+					) {
 				
-				if ( s.endsWith(ext) ) {
-					
-					return t;
-				}
+				return t;
+			}
+		}
+		
+		return SingletonHolder.undefined;
+	}
+	
+	public static HttpContentType get(CharSequence extension) {
+		
+		final String s = extension.toString();
+		
+		for ( HttpContentType t : SingletonHolder.inst ) {
+			
+			if ( t.extensions.stream()
+					.anyMatch(ext -> ext.equalsIgnoreCase(s))
+					) {
+				
+				return t;
 			}
 		}
 		

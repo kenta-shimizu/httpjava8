@@ -18,4 +18,10 @@ public class QueryParseResult {
 	public String get(CharSequence key) {
 		return map.get(key.toString());
 	}
+	
+	@Override
+	public String toString() {
+		return map.toString();
+	}
+	
 }

@@ -33,7 +33,7 @@ public class HttpGeneralFileServerService extends HttpServerService {
 	
 	private static final int ByteArrayOutputStreamSize = 256 * 64;
 	
-	private final DateTimeFormatter rfc1123Formatter = DateTimeFormatter.RFC_1123_DATE_TIME;
+	private static final DateTimeFormatter rfc1123Formatter = DateTimeFormatter.RFC_1123_DATE_TIME;
 	
 	private final HttpGeneralFileServerServiceConfig config;
 	private final HttpResponseMessageBuilder msgBuilder = HttpResponseMessageBuilders.get(HttpVersion.HTTP1_1);
@@ -123,18 +123,20 @@ public class HttpGeneralFileServerService extends HttpServerService {
 			throw new HttpMessageParseException("AbsolutePath include \"..\"");
 		}
 		
-		Path path = config.serverRoot()
-				.map(p -> {
-					
-					String s = absPath.substring(1);
-					
-					if ( s.isEmpty() ) {
-						return p;
-					}
-					
-					return p.resolve(s);
-				})
-				.orElseThrow(() -> new HttpMessageParseException("Server Root not setted"));
+		Path path;
+		{
+			Path serverRoot = config.serverRoot();
+			String s = absPath.substring(1);
+			
+			if ( s.isEmpty() ) {
+				
+				path = serverRoot;
+				
+			} else {
+				
+				path = serverRoot.resolve(s);
+			}
+		}
 		
 		if (Files.isDirectory(path)) {
 			

@@ -48,25 +48,28 @@ public class HttpServer extends AbstractHttpServer {
 		
 		this.config = config;
 		
-		if ( config.generalFileServerServiceConfig().serverRoot().isPresent() ) {
-			
-			generalService = new HttpGeneralFileServerService(config.generalFileServerServiceConfig());
-			
-		} else {
-			
-			generalService = new HttpServerServiceSupplier() {
-				
-				@Override
-				public boolean accept(HttpRequestMessage request) {
-					return false;
-				}
-				
-				@Override
-				public boolean tryService(HttpMessageWriter writer, HttpRequestMessage request, HttpServerConnectionValue connectionValue) {
-					return false;
-				}
-			};
+		this.generalService = new HttpGeneralFileServerService(config.generalFileServerServiceConfig());
+	}
+	
+	public static HttpServer open(HttpServerConfig config) throws IOException {
+		
+		HttpServer inst = new HttpServer(config);
+		
+		try {
+			inst.open();
 		}
+		catch ( IOException e ) {
+			
+			try {
+				inst.close();
+			}
+			catch ( IOException giveup ) {
+			}
+			
+			throw e;
+		}
+		
+		return inst;
 	}
 	
 	@Override
@@ -114,6 +117,8 @@ public class HttpServer extends AbstractHttpServer {
 				) {
 			
 			server.bind(config.serverAddress());
+			
+			putLog(new HttpLog("binded", server));
 			
 			server.accept(null, new CompletionHandler<AsynchronousSocketChannel, Void>() {
 				
