@@ -31,9 +31,8 @@ See also "/src/examples/example1/ExampleHttpGeneralServer.java"
 Override "HttpServer#writeResponseMessage"  
 See "/src/examples/example2/ExampleHttpApiServer.java"  
 
-See  
-["/src/examples/example2/ExampleHttpApiServer.java"][1]
-[1]:./tree/master/src/examples/example1
+See "/src/examples/example2/ExampleHttpApiServer.java"  
+[Link](/src/examples/example1/)
 
 
 ## for HTTP  Client
