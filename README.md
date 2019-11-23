@@ -22,14 +22,18 @@ Use to create simple API HTTP Server.
     HttpServer server = HttpServer.open(config);
 ```
 
-see also "/src/examples/example1/ExampleHttpGeneralServer.java"
+See also "/src/examples/example1/ExampleHttpGeneralServer.java"
 
 
 
 ### Create API HTTP Server
 
 Override "HttpServer#writeResponseMessage"  
-see "/src/examples/example2/ExampleHttpApiServer.java"
+See "/src/examples/example2/ExampleHttpApiServer.java"  
+
+See  
+["/src/examples/example2/ExampleHttpApiServer.java"][1]
+[1]:./tree/master/src/examples/example1
 
 
 ## for HTTP  Client
