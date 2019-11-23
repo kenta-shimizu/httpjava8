@@ -9,7 +9,7 @@ import http.util.HttpServer;
 public class ExampleHttpApiServer {
 
 	public ExampleHttpApiServer() {
-		// TODO Auto-generated constructor stub
+		/* Nothing */
 	}
 
 	public static void main(String[] args) {
