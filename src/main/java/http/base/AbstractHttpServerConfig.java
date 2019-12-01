@@ -18,7 +18,12 @@ public class AbstractHttpServerConfig {
 	
 	public SocketAddress serverAddress() {
 		synchronized ( this ) {
-			return this.serverAddress;
+			
+			if ( serverAddress == null ) {
+				throw new IllegalStateException("Server Address not setted");
+			}
+			
+			return serverAddress;
 		}
 	}
 	

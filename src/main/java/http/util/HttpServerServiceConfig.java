@@ -6,14 +6,16 @@ import java.util.HashSet;
 import java.util.Optional;
 
 abstract public class HttpServerServiceConfig {
-
+	
+	public static final boolean defaultAddTimestamps = true;
+	
 	private final Collection<String> hostNames = new HashSet<>();
 	private String serverName;
 	private boolean addTimestamps;
 
 	public HttpServerServiceConfig() {
 		this.serverName = null;
-		this.addTimestamps = true;
+		this.addTimestamps = defaultAddTimestamps;
 	}
 	
 	public Collection<String> hostNames() {

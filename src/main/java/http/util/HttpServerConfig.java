@@ -4,9 +4,9 @@ import http.base.AbstractHttpServerConfig;
 
 public class HttpServerConfig extends AbstractHttpServerConfig {
 	
-	private static final float defaultReBindSeconds = 5.0F;
-	private static final int defaultKeepAliveMax = 100;
-	private static final long defaultKeepAliveTimeout = 5;
+	public static final float defaultReBindSeconds = 5.0F;
+	public static final int defaultKeepAliveMax = 100;
+	public static final long defaultKeepAliveTimeout = 5;
 	
 	private float reBindSeconds;
 	private int keepAliveMax;

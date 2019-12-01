@@ -19,9 +19,11 @@ public class HttpMessageWriter {
 	private static final int CRLFBYTESLENGTH = CRLFBYTES.length;
 	
 	private final AsynchronousSocketChannel channel;
+	private final String channelInfo;
 	
 	protected HttpMessageWriter(AsynchronousSocketChannel channel) {
 		this.channel = channel;
+		this.channelInfo = channel.toString();
 	}
 	
 	public static HttpMessageWriter get(AsynchronousSocketChannel channel) {
@@ -30,7 +32,7 @@ public class HttpMessageWriter {
 	
 	public void write(AbstractHttpMessage msg) throws InterruptedException, HttpWriteMessageClosedChannelException, HttpWriteMessageException, HttpMessageParseException {
 		write(msg.getBytes());
-		putWroteLog(msg);
+		putWroteLog(channelInfo, msg);
 	}
 	
 	public void write(byte[] bs) throws InterruptedException, HttpWriteMessageClosedChannelException, HttpWriteMessageException {
@@ -110,8 +112,13 @@ public class HttpMessageWriter {
 		return wroteLogListeners.remove(lstnr);
 	}
 	
-	protected void putWroteLog(AbstractHttpMessage msg) {
-		HttpLog log = new HttpLog("Message wrote", msg);
+	protected void putWroteLog(Object channelInfo, AbstractHttpMessage msg) {
+		
+		HttpLog log = new HttpLog("Message wrote", (
+				channelInfo.toString()
+				+ System.lineSeparator()
+				+ msg.toString()));
+		
 		wroteLogListeners.forEach(lstnr -> {
 			lstnr.receive(log);
 		});

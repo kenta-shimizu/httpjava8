@@ -198,6 +198,8 @@ public class HttpServer extends AbstractHttpServer {
 		
 		HttpRequestMessageReader reader = new HttpRequestMessageReader();
 		
+		final String channelInfo = channel.toString();
+		
 		for ( ;; ) {
 			
 			((Buffer)buffer).clear();
@@ -217,7 +219,9 @@ public class HttpServer extends AbstractHttpServer {
 					
 					Optional<HttpRequestMessage> op = reader.put(buffer);
 					
-					op.ifPresent(this::putAccessLog);
+					op.ifPresent(msg -> {
+						putAccessLog(channelInfo, msg);
+					});
 					
 					if ( op.isPresent() ) {
 						
@@ -307,7 +311,10 @@ public class HttpServer extends AbstractHttpServer {
 		return new HttpKeepAliveValue(config.keepAliveTimeout(), config.keepAliveMax());
 	}
 	
-	protected void putAccessLog(HttpRequestMessage msg) {
-		putAccessLog(new HttpLog("Message accept", msg));
+	protected void putAccessLog(Object channelInfo, HttpRequestMessage msg) {
+		putAccessLog(new HttpLog("Message accept", (
+				channelInfo.toString()
+				+ System.lineSeparator()
+				+ msg.toString())));
 	}
 }

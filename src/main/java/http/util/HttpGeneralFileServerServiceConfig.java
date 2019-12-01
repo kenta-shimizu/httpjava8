@@ -8,7 +8,8 @@ import java.util.Objects;
 
 public class HttpGeneralFileServerServiceConfig extends HttpServerServiceConfig {
 	
-	private static final int defaultCompressBodyDataSize = 256 * 16;
+	public static final int defaultCompressBodyDataSize = 256 * 16;
+	public static final long defaultMaxFileSize = (long)(Integer.MAX_VALUE);
 	
 	private Path serverRoot;
 	private final List<String> directoryIndexes = new ArrayList<>();
@@ -19,7 +20,7 @@ public class HttpGeneralFileServerServiceConfig extends HttpServerServiceConfig 
 		super();
 		
 		this.serverRoot = null;
-		this.maxFileSize = (long)(Integer.MAX_VALUE);
+		this.maxFileSize = defaultMaxFileSize;
 		this.compressBodyDataSize = defaultCompressBodyDataSize;
 	}
 	

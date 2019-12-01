@@ -221,7 +221,7 @@ public class HttpGeneralFileServerService extends HttpServerService {
 				String v = "timeout="
 						+ connectionValue.keepAlive().timeout()
 						+ ", max="
-						+ connectionValue.keepAlive().decreaseRemaining();
+						+ connectionValue.keepAlive().remaining();
 				
 				List<HttpHeader> ll = Arrays.asList(
 						new HttpHeader(HttpHeaderField.KeepAlive, v)
