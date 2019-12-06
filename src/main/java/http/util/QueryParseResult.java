@@ -19,6 +19,10 @@ public class QueryParseResult {
 		return map.get(key.toString());
 	}
 	
+	public boolean containsKey(CharSequence key) {
+		return map.containsKey(key.toString());
+	}
+	
 	@Override
 	public String toString() {
 		return map.toString();
