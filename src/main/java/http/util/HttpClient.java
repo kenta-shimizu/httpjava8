@@ -5,11 +5,11 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import http.HttpMessageParseException;
+import http.HttpWriteMessageClosedChannelException;
+import http.HttpWriteMessageException;
 import http.base.AbstractHttpClient;
-import http.base.HttpMessageParseException;
 import http.base.HttpRequestMessagePack;
-import http.base.HttpWriteMessageClosedChannelException;
-import http.base.HttpWriteMessageException;
 
 public class HttpClient extends AbstractHttpClient {
 	

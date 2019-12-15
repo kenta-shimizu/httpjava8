@@ -1,5 +1,7 @@
 package http.base;
 
+import http.HttpBaseException;
+
 public class HttpReadMessageException extends HttpBaseException {
 
 	/**

@@ -7,6 +7,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import http.HttpHeaderField;
+import http.HttpMessageParseException;
+
 public class HttpRequestMessage extends AbstractHttpMessage {
 	
 	private final HttpRequestLine requestLine;

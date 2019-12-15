@@ -2,6 +2,9 @@ package http.base;
 
 import java.nio.charset.StandardCharsets;
 
+import http.HttpHeaderField;
+import http.HttpMessageParseException;
+
 public class HttpHeader implements Cloneable {
 	
 	private static final String COLON = ":";

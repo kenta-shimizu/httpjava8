@@ -2,6 +2,8 @@ package http.base;
 
 import java.nio.ByteBuffer;
 
+import http.HttpMessageParseException;
+
 public interface HttpMessageBodyReadable {
 	
 	/**

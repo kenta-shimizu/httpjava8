@@ -11,51 +11,51 @@ public class HttpGeneralFileServerServiceConfig extends HttpServerServiceConfig 
 	public static final int defaultCompressBodyDataSize = 256 * 16;
 	public static final long defaultMaxFileSize = (long)(Integer.MAX_VALUE);
 	
-	private Path serverRoot;
-	private final List<String> directoryIndexes = new ArrayList<>();
-	private long maxFileSize;
-	private int compressBodyDataSize;
+	private Path _serverRoot;
+	private final List<String> _directoryIndexes = new ArrayList<>();
+	private long _maxFileSize;
+	private int _compressBodyDataSize;
 	
 	public HttpGeneralFileServerServiceConfig() {
 		super();
 		
-		this.serverRoot = null;
-		this.maxFileSize = defaultMaxFileSize;
-		this.compressBodyDataSize = defaultCompressBodyDataSize;
+		this._serverRoot = null;
+		this._maxFileSize = defaultMaxFileSize;
+		this._compressBodyDataSize = defaultCompressBodyDataSize;
 	}
 	
 	public Path serverRoot() {
 		synchronized ( this ) {
 			
-			if ( serverRoot == null ) {
+			if ( _serverRoot == null ) {
 				throw new IllegalStateException("Server Root not setted");
 			}
 			
-			return serverRoot;
+			return _serverRoot;
 		}
 	}
 	
 	public void serverRoot(Path path) {
 		synchronized ( this ) {
-			this.serverRoot = Objects.requireNonNull(path);
+			this._serverRoot = Objects.requireNonNull(path);
 		}
 	}
 	
 	public List<String> directoryIndexes() {
 		synchronized ( this ) {
-			return Collections.unmodifiableList(directoryIndexes);
+			return Collections.unmodifiableList(_directoryIndexes);
 		}
 	}
 	
 	public boolean directoryIndex(CharSequence cs) {
 		synchronized ( this ) {
-			return this.directoryIndexes.add(cs.toString());
+			return this._directoryIndexes.add(cs.toString());
 		}
 	}
 	
 	public long maxFileSize() {
 		synchronized ( this ) {
-			return maxFileSize;
+			return _maxFileSize;
 		}
 	}
 	
@@ -67,19 +67,19 @@ public class HttpGeneralFileServerServiceConfig extends HttpServerServiceConfig 
 				throw new IllegalArgumentException("maxFileSize is >0");
 			}
 			
-			this.maxFileSize = size;
+			this._maxFileSize = size;
 		}
 	}
 	
 	public int compressBodyDataSize() {
 		synchronized ( this ) {
-			return compressBodyDataSize;
+			return _compressBodyDataSize;
 		}
 	}
 	
 	public void compressBodyDataSize(int size) {
 		synchronized ( this ) {
-			this.compressBodyDataSize = size;
+			this._compressBodyDataSize = size;
 		}
 	}
 	

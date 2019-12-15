@@ -2,9 +2,9 @@ package http.util;
 
 import java.nio.charset.StandardCharsets;
 
-import http.base.HttpMessageParseException;
+import http.HttpMessageParseException;
+import http.HttpServerServiceSupplier;
 import http.base.HttpRequestMessage;
-import http.base.HttpServerServiceSupplier;
 
 abstract public class HttpServerService implements HttpServerServiceSupplier {
 

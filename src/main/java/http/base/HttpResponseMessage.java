@@ -4,6 +4,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
+import http.HttpHeaderField;
+import http.HttpMessageParseException;
+
 public class HttpResponseMessage extends AbstractHttpMessage {
 	
 	private final HttpStatusLine statusLine;

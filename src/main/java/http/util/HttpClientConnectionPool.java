@@ -14,8 +14,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
 
-import http.base.HttpLog;
-import http.base.HttpLogListener;
+import http.HttpLog;
+import http.HttpLogListener;
 import http.base.HttpResponseMessagePack;
 import http.base.HttpResponseMessagePackListener;
 

@@ -8,22 +8,23 @@ public class HttpServerConfig extends AbstractHttpServerConfig {
 	public static final int defaultKeepAliveMax = 100;
 	public static final long defaultKeepAliveTimeout = 5;
 	
-	private float reBindSeconds;
-	private int keepAliveMax;
-	private long keepAliveTimeout;
+	private float _reBindSeconds;
+	private int _keepAliveMax;
+	private long _keepAliveTimeout;
 	
-	private final HttpGeneralFileServerServiceConfig fileConfig = new HttpGeneralFileServerServiceConfig();
+	private final HttpGeneralFileServerServiceConfig _fileConfig = new HttpGeneralFileServerServiceConfig();
 	
 	public HttpServerConfig() {
 		super();
-		reBindSeconds = defaultReBindSeconds;
-		keepAliveMax = defaultKeepAliveMax;
-		keepAliveTimeout = defaultKeepAliveTimeout;
+		
+		_reBindSeconds = defaultReBindSeconds;
+		_keepAliveMax = defaultKeepAliveMax;
+		_keepAliveTimeout = defaultKeepAliveTimeout;
 	}
 	
 	public float reBindSeconds() {
 		synchronized ( this ) {
-			return reBindSeconds;
+			return _reBindSeconds;
 		}
 	}
 	
@@ -35,19 +36,19 @@ public class HttpServerConfig extends AbstractHttpServerConfig {
 				throw new IllegalArgumentException("");
 			}
 			
-			reBindSeconds = v;
+			_reBindSeconds = v;
 		}
 	}
 	
 	public int keepAliveMax() {
 		synchronized ( this ) {
-			return keepAliveMax;
+			return _keepAliveMax;
 		}
 	}
 	
 	public void keepAliveMax(int v) {
 		synchronized ( this ) {
-			this.keepAliveMax = v;
+			this._keepAliveMax = v;
 		}
 	}
 	
@@ -57,7 +58,7 @@ public class HttpServerConfig extends AbstractHttpServerConfig {
 	 */
 	public long keepAliveTimeout() {
 		synchronized ( this ) {
-			return keepAliveTimeout;
+			return _keepAliveTimeout;
 		}
 	}
 	
@@ -67,12 +68,12 @@ public class HttpServerConfig extends AbstractHttpServerConfig {
 	 */
 	public void keepAliveTimeout(long timeout_seconds) {
 		synchronized ( this ) {
-			this.keepAliveTimeout = timeout_seconds;
+			this._keepAliveTimeout = timeout_seconds;
 		}
 	}
 	
 	public HttpGeneralFileServerServiceConfig generalFileServerServiceConfig() {
-		return fileConfig;
+		return _fileConfig;
 	}
 	
 }

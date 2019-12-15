@@ -16,17 +16,17 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import http.base.HttpLog;
-import http.base.HttpLogListener;
-import http.base.HttpMessageParseException;
+import http.HttpLog;
+import http.HttpLogListener;
+import http.HttpMessageParseException;
+import http.HttpWriteMessageClosedChannelException;
+import http.HttpWriteMessageException;
 import http.base.HttpMessageWriter;
 import http.base.HttpReadMessageException;
 import http.base.HttpRequestMessagePack;
 import http.base.HttpResponseMessage;
 import http.base.HttpResponseMessagePack;
 import http.base.HttpResponseMessagePackListener;
-import http.base.HttpWriteMessageClosedChannelException;
-import http.base.HttpWriteMessageException;
 
 public class HttpClientConnection implements Closeable {
 	

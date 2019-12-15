@@ -2,6 +2,10 @@ package http.base;
 
 import java.nio.charset.StandardCharsets;
 
+import http.HttpMessageParseException;
+import http.HttpStatus;
+import http.HttpVersion;
+
 public class HttpStatusLine {
 	
 	private static final String SP = " ";

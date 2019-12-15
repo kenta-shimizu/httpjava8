@@ -14,18 +14,18 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import http.HttpLog;
+import http.HttpMessageParseException;
+import http.HttpServerServiceSupplier;
+import http.HttpStatus;
+import http.HttpVersion;
+import http.HttpWriteMessageException;
 import http.base.AbstractHttpServer;
 import http.base.HttpKeepAliveValue;
-import http.base.HttpLog;
-import http.base.HttpMessageParseException;
 import http.base.HttpMessageWriter;
 import http.base.HttpReadMessageException;
 import http.base.HttpRequestMessage;
 import http.base.HttpServerConnectionValue;
-import http.base.HttpServerServiceSupplier;
-import http.base.HttpStatus;
-import http.base.HttpVersion;
-import http.base.HttpWriteMessageException;
 
 public class HttpServer extends AbstractHttpServer {
 	
@@ -88,17 +88,12 @@ public class HttpServer extends AbstractHttpServer {
 					catch ( InterruptedException e ) {
 						throw e;
 					}
-					catch ( Throwable t ) {
-						
+					catch ( RuntimeException | Error t ) {
 						putLog(t);
-						
-						if ( t instanceof RuntimeException ) {
-							throw (RuntimeException)t;
-						}
-						
-						if ( t instanceof Error ) {
-							throw (Error)t;
-						}
+						throw t;
+					}
+					catch ( Throwable t ) {
+						putLog(t);
 					}
 					
 					long t = (long)(config.reBindSeconds() * 1000.0F);
@@ -252,11 +247,11 @@ public class HttpServer extends AbstractHttpServer {
 		synchronized ( this ) {
 			
 			try {
-				super.close();
-				
 				if ( isClosed() ) {
 					return;
 				}
+				
+				super.close();
 			}
 			catch ( IOException e ) {
 				ioExcept = e;

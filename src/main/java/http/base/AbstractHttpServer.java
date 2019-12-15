@@ -3,6 +3,9 @@ package http.base;
 import java.util.Collection;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import http.HttpLog;
+import http.HttpLogListener;
+
 public abstract class AbstractHttpServer extends AbstractHttpTerminalEntity {
 	
 	public AbstractHttpServer(AbstractHttpServerConfig config) {

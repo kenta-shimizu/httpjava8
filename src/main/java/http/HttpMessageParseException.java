@@ -1,4 +1,4 @@
-package http.base;
+package http;
 
 public class HttpMessageParseException extends HttpBaseException {
 

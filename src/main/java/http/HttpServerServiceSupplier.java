@@ -1,4 +1,8 @@
-package http.base;
+package http;
+
+import http.base.HttpMessageWriter;
+import http.base.HttpRequestMessage;
+import http.base.HttpServerConnectionValue;
 
 public interface HttpServerServiceSupplier {
 	

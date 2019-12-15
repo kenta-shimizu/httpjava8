@@ -3,6 +3,9 @@ package http.base;
 import java.util.Collection;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import http.HttpMessageParseException;
+import http.HttpWriteMessageException;
+
 public abstract class AbstractHttpClient extends AbstractHttpTerminalEntity {
 	
 	public AbstractHttpClient(AbstractHttpClientConfig config) {

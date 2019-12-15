@@ -5,6 +5,9 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import http.HttpLog;
+import http.HttpLogListener;
+
 public abstract class AbstractHttpTerminalEntity implements Closeable {
 	
 	private boolean opened;

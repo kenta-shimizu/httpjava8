@@ -1,11 +1,11 @@
 package http.util;
 
+import http.HttpStatus;
+import http.HttpVersion;
 import http.base.HttpHeaderGroup;
 import http.base.HttpMessageBody;
 import http.base.HttpResponseMessage;
-import http.base.HttpStatus;
 import http.base.HttpStatusLine;
-import http.base.HttpVersion;
 
 public abstract class HttpResponseMessageBuilder {
 

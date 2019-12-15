@@ -3,13 +3,13 @@ package http.util;
 import java.util.Arrays;
 import java.util.List;
 
+import http.HttpHeaderField;
+import http.HttpMethod;
+import http.HttpVersion;
 import http.base.HttpHeader;
-import http.base.HttpHeaderField;
 import http.base.HttpHeaderGroup;
 import http.base.HttpMessageBody;
-import http.base.HttpMethod;
 import http.base.HttpRequestMessagePack;
-import http.base.HttpVersion;
 
 public class HttpRequestMessageBuilderVersion1p0 extends HttpRequestMessageBuilder {
 

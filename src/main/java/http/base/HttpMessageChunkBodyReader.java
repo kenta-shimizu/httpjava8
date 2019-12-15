@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import http.HttpMessageParseException;
+
 public class HttpMessageChunkBodyReader implements HttpMessageBodyReadable {
 	
 	private final ByteArrayOutputStream os;

@@ -9,6 +9,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import http.HttpHeaderField;
+import http.HttpMessageParseException;
+
 public class HttpHeaderGroup implements Cloneable {
 	
 	private static final String CRLF = "\r\n";

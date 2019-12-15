@@ -1,6 +1,6 @@
 package http.util;
 
-import http.base.HttpVersion;
+import http.HttpVersion;
 
 public class HttpRequestMessageBuilders {
 

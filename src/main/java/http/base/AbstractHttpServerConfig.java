@@ -4,26 +4,26 @@ import java.net.SocketAddress;
 
 public class AbstractHttpServerConfig {
 	
-	private SocketAddress serverAddress;
+	private SocketAddress _serverAddress;
 	
 	public AbstractHttpServerConfig() {
-		this.serverAddress = null;
+		this._serverAddress = null;
 	}
 	
 	public void serverAddress(SocketAddress address) {
 		synchronized ( this ) {
-			this.serverAddress = address;
+			this._serverAddress = address;
 		}
 	}
 	
 	public SocketAddress serverAddress() {
 		synchronized ( this ) {
 			
-			if ( serverAddress == null ) {
+			if ( _serverAddress == null ) {
 				throw new IllegalStateException("Server Address not setted");
 			}
 			
-			return serverAddress;
+			return _serverAddress;
 		}
 	}
 	

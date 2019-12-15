@@ -2,6 +2,8 @@ package http.base;
 
 import java.nio.charset.StandardCharsets;
 
+import http.HttpMessageParseException;
+
 public abstract class AbstractHttpMessage {
 
 	protected static final String CRLF = "\r\n";
