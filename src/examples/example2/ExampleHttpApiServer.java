@@ -1,50 +1,36 @@
 package example2;
 
 import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.nio.file.Paths;
 
-import http.util.HttpServer;
+import http.api.HttpApiServer;
 
-public class ExampleHttpApiServer {
+public class ExampleHttpApiServer extends HttpApiServer {
 
-	public ExampleHttpApiServer() {
-		/* Nothing */
+	public ExampleHttpApiServer(ExampleHttpApiServerConfig config) {
+		super(config);
+		
+		this.addApiServerService(new ExampleHttpApiServerService(config.apiServerServiceConfig()));
 	}
-
-	public static void main(String[] args) {
+	
+	public static ExampleHttpApiServer open(ExampleHttpApiServerConfig config) throws IOException {
 		
-		String hostName = "HTTP-API-SERVER";
+		ExampleHttpApiServer inst = new ExampleHttpApiServer(config);
 		
-		HttpApiServerConfig config = new HttpApiServerConfig();
-		
-		config.serverAddress(new InetSocketAddress("127.0.0.1", 80));
-		
-		config.generalFileServerServiceConfig().serverRoot(Paths.get("/path/to/root-directory"));
-		config.generalFileServerServiceConfig().directoryIndex("index.html");
-		config.generalFileServerServiceConfig().hostName(hostName);
-		
-		config.apiServerServiceConfig().absolutePath("/api");
-		config.apiServerServiceConfig().hostName(hostName);
-		
-		try (
-				HttpServer server = HttpApiServer.open(config);
-				) {
-			
-			server.addAccessLogListener(System.out::println);
-			server.addResponseLogListener(System.out::println);
-			server.addLogListener(System.out::println);
-			
-			synchronized ( ExampleHttpApiServer.class ) {
-				ExampleHttpApiServer.class.wait();
-			}
-		}
-		catch ( InterruptedException ignore ) {
+		try {
+			inst.open();
 		}
 		catch ( IOException e ) {
-			e.printStackTrace();
+			
+			try {
+				inst.close();
+			}
+			catch ( IOException giveup ) {
+			}
+			
+			throw e;
 		}
-
+		
+		return inst;
 	}
 	
 }

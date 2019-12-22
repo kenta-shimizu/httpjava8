@@ -8,43 +8,37 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import http.HttpHeaderField;
+import http.HttpMessageParseException;
+import http.HttpMethod;
+import http.HttpStatus;
+import http.HttpVersion;
+import http.HttpWriteMessageException;
+import http.api.HttpApiServerService;
 import http.base.HttpContentType;
 import http.base.HttpHeader;
-import http.base.HttpHeaderField;
 import http.base.HttpHeaderGroup;
 import http.base.HttpMessageBody;
-import http.base.HttpMessageParseException;
 import http.base.HttpMessageWriter;
-import http.base.HttpMethod;
 import http.base.HttpRequestMessage;
 import http.base.HttpResponseMessage;
 import http.base.HttpServerConnectionValue;
-import http.base.HttpStatus;
-import http.base.HttpVersion;
-import http.base.HttpWriteMessageException;
 import http.util.HttpResponseMessageBuilder;
 import http.util.HttpResponseMessageBuilders;
-import http.util.HttpServerService;
 import http.util.QueryParseResult;
 
-public class HttpApiServerService extends HttpServerService {
+public class ExampleHttpApiServerService extends HttpApiServerService {
 	
 	private static final DateTimeFormatter rfc1123Formatter = DateTimeFormatter.RFC_1123_DATE_TIME;
 	
 	private final HttpResponseMessageBuilder msgBuilder = HttpResponseMessageBuilders.get(HttpVersion.HTTP1_1);
 	
-	private final HttpApiServerServiceConfig config;
+	private final ExampleHttpApiServerServiceConfig config;
 	
-	public HttpApiServerService(HttpApiServerServiceConfig config) {
+	public ExampleHttpApiServerService(ExampleHttpApiServerServiceConfig config) {
 		super(config);
 		
 		this.config = config;
-	}
-
-	@Override
-	public boolean accept(HttpRequestMessage request) throws HttpMessageParseException {
-		
-		return getAbsolutePath(request).equals(config.absolutePath());
 	}
 
 	@Override

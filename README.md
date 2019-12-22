@@ -29,7 +29,7 @@ See also ["/src/examples/example1/ExampleHttpGeneralServer.java"](/src/examples/
 ### Create API HTTP Server
 
 Override ```HttpServer#writeResponseMessage```  
-See ["/src/examples/example2/ExampleHttpApiServer.java"](/src/examples/example2/)
+See ["/src/examples/example2/Example2.java"](/src/examples/example2/)
 
 
 ## for HTTP  Client
