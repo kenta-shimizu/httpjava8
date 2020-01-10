@@ -4,27 +4,27 @@ import http.util.HttpServerServiceConfig;
 
 public class HttpApiServerServiceConfig extends HttpServerServiceConfig {
 	
-	private String absPath;
+	private String _absPath;
 	
 	public HttpApiServerServiceConfig() {
 		super();
 		
-		this.absPath = null;
+		this._absPath = null;
 	}
 	
 	public void absolutePath(CharSequence absolutePath) {
 		synchronized ( this ) {
-			this.absPath = absolutePath.toString();
+			this._absPath = absolutePath.toString();
 		}
 	}
 	
 	public String absolutePath() {
 		synchronized ( this ) {
-			if ( absPath == null ) {
+			if ( _absPath == null ) {
 				throw new IllegalStateException("Absolute Path not setted");
 			}
 			
-			return absPath;
+			return _absPath;
 		}
 	}
 	
