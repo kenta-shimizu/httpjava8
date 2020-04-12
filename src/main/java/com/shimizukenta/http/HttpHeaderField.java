@@ -1,4 +1,4 @@
-package http;
+package com.shimizukenta.http;
 
 public enum HttpHeaderField {
 	
@@ -31,11 +31,14 @@ public enum HttpHeaderField {
 	
 	public static HttpHeaderField get(CharSequence cs) {
 		
-		String s = cs.toString();
-		
-		for ( HttpHeaderField hfn : values() ) {
-			if ( hfn.fieldName.equalsIgnoreCase(s) ) {
-				return hfn;
+		if ( cs != null ) {
+			
+			String s = cs.toString();
+			
+			for ( HttpHeaderField v : values() ) {
+				if ( v.fieldName.equalsIgnoreCase(s) ) {
+					return v;
+				}
 			}
 		}
 		

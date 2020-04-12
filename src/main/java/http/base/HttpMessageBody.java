@@ -2,6 +2,8 @@ package http.base;
 
 import java.util.Optional;
 
+import com.shimizukenta.http.HttpContentType;
+
 public class HttpMessageBody {
 	
 	private byte[] body;

@@ -3,8 +3,8 @@ package http.base;
 import java.util.Collection;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import http.HttpLog;
-import http.HttpLogListener;
+import com.shimizukenta.http.HttpLog;
+import com.shimizukenta.http.HttpLogListener;
 
 public abstract class AbstractHttpServer extends AbstractHttpTerminalEntity {
 	

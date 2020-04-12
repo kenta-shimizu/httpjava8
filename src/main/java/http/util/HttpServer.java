@@ -14,11 +14,12 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import http.HttpLog;
+import com.shimizukenta.http.HttpLog;
+import com.shimizukenta.http.HttpStatus;
+import com.shimizukenta.http.HttpVersion;
+
 import http.HttpMessageParseException;
 import http.HttpServerServiceSupplier;
-import http.HttpStatus;
-import http.HttpVersion;
 import http.HttpWriteMessageException;
 import http.base.AbstractHttpServer;
 import http.base.HttpKeepAliveValue;

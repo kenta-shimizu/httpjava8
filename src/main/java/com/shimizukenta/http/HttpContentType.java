@@ -1,4 +1,4 @@
-package http.base;
+package com.shimizukenta.http;
 
 import java.nio.file.Path;
 import java.util.Arrays;

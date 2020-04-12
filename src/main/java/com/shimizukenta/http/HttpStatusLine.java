@@ -1,10 +1,8 @@
-package http.base;
+package com.shimizukenta.http;
 
 import java.nio.charset.StandardCharsets;
 
 import http.HttpMessageParseException;
-import http.HttpStatus;
-import http.HttpVersion;
 
 public class HttpStatusLine {
 	

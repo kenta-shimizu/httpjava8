@@ -2,6 +2,8 @@ package http.base;
 
 import java.net.SocketAddress;
 
+import com.shimizukenta.http.HttpRequestLine;
+
 public class HttpRequestMessagePack extends HttpRequestMessage {
 	
 	private final SocketAddress serverSocketAddress;

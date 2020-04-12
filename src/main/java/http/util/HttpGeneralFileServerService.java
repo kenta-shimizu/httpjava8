@@ -14,14 +14,15 @@ import java.util.List;
 import java.util.zip.Deflater;
 import java.util.zip.GZIPOutputStream;
 
-import http.HttpHeaderField;
+import com.shimizukenta.http.HttpContentType;
+import com.shimizukenta.http.HttpHeader;
+import com.shimizukenta.http.HttpHeaderField;
+import com.shimizukenta.http.HttpMethod;
+import com.shimizukenta.http.HttpStatus;
+import com.shimizukenta.http.HttpVersion;
+
 import http.HttpMessageParseException;
-import http.HttpMethod;
-import http.HttpStatus;
-import http.HttpVersion;
 import http.HttpWriteMessageException;
-import http.base.HttpContentType;
-import http.base.HttpHeader;
 import http.base.HttpHeaderGroup;
 import http.base.HttpMessageBody;
 import http.base.HttpMessageWriter;

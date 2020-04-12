@@ -4,8 +4,11 @@ import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import http.HttpLog;
-import http.HttpLogListener;
+import com.shimizukenta.http.HttpLog;
+import com.shimizukenta.http.HttpLogListener;
+import com.shimizukenta.http.QueryParseResult;
+import com.shimizukenta.http.QueryParser;
+
 import http.HttpMessageParseException;
 import http.HttpServerServiceSupplier;
 import http.base.HttpRequestMessage;

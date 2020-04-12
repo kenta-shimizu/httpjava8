@@ -1,4 +1,4 @@
-package http.util;
+package com.shimizukenta.http;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -24,37 +24,47 @@ public class QueryParser {
 	
 	public QueryParseResult parse(CharSequence query) {
 		
-		Map<String, String> map = new HashMap<>();
+		if ( query != null ) {
 		
-		String[] vv = query.toString().split("&");
-		
-		for ( String v : vv ) {
+			String s = query.toString().trim();
 			
-			if ( v.isEmpty() ) {
-				continue;
-			}
+			if ( ! s.isEmpty() ) {
 			
-			String[] ss = v.split("=");
-			
-			if ( ss[0].isEmpty() ) {
-				continue;
-			}
-			
-			if ( ss.length > 1 ) {
+				String[] vv = s.split("&");
 				
-				try {
-					map.put(ss[0], URLDecoder.decode(ss[1], StandardCharsets.UTF_8.name()));
+				Map<String, String> map = new HashMap<>();
+				
+				for ( String v : vv ) {
+					
+					if ( v.isEmpty() ) {
+						continue;
+					}
+					
+					String[] ss = v.split("=");
+					
+					if ( ss[0].isEmpty() ) {
+						continue;
+					}
+					
+					if ( ss.length > 1 ) {
+						
+						try {
+							map.put(ss[0], URLDecoder.decode(ss[1], StandardCharsets.UTF_8.name()));
+						}
+						catch (UnsupportedEncodingException giveup) {
+						}
+						
+					} else {
+						
+						map.put(ss[0], "");
+					}
 				}
-				catch (UnsupportedEncodingException giveup) {
-				}
 				
-			} else {
-				
-				map.put(ss[0], "");
+				return new QueryParseResult(map);
 			}
 		}
 		
-		return new QueryParseResult(map);
+		return empty();
 	}
 	
 	public QueryParseResult empty() {

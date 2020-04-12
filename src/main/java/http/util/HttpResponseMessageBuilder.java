@@ -1,11 +1,12 @@
 package http.util;
 
-import http.HttpStatus;
-import http.HttpVersion;
+import com.shimizukenta.http.HttpStatus;
+import com.shimizukenta.http.HttpStatusLine;
+import com.shimizukenta.http.HttpVersion;
+
 import http.base.HttpHeaderGroup;
 import http.base.HttpMessageBody;
 import http.base.HttpResponseMessage;
-import http.base.HttpStatusLine;
 
 public abstract class HttpResponseMessageBuilder {
 

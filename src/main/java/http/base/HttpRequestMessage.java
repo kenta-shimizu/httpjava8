@@ -7,7 +7,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import http.HttpHeaderField;
+import com.shimizukenta.http.HttpHeaderField;
+import com.shimizukenta.http.HttpRequestLine;
+
 import http.HttpMessageParseException;
 
 public class HttpRequestMessage extends AbstractHttpMessage {

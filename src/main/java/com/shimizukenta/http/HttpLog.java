@@ -1,4 +1,4 @@
-package http;
+package com.shimizukenta.http;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -22,7 +22,7 @@ public class HttpLog {
 	private String parsedString;
 	
 	public HttpLog(CharSequence subject, LocalDateTime timestamp, Object value) {
-		this.subject = subject.toString();
+		this.subject = Objects.requireNonNull(subject).toString();
 		this.timestamp = timestamp;
 		this.value = value;
 		

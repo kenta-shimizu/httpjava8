@@ -1,4 +1,4 @@
-package http;
+package com.shimizukenta.http;
 
 import java.util.EventListener;
 

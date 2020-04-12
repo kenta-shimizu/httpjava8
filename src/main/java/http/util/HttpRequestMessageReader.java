@@ -6,15 +6,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import com.shimizukenta.http.HttpHeaderField;
+import com.shimizukenta.http.HttpRequestLine;
+
 import http.base.HttpMessageBodyReadable;
-import http.HttpHeaderField;
 import http.HttpMessageParseException;
 import http.base.CrLfLineReader;
 import http.base.HttpHeaderGroup;
 import http.base.HttpMessageBytesBodyReader;
 import http.base.HttpMessageChunkBodyReader;
 import http.base.HttpReadMessageException;
-import http.base.HttpRequestLine;
 import http.base.HttpRequestMessage;
 
 public class HttpRequestMessageReader {

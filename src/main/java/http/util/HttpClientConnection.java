@@ -16,8 +16,9 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import http.HttpLog;
-import http.HttpLogListener;
+import com.shimizukenta.http.HttpLog;
+import com.shimizukenta.http.HttpLogListener;
+
 import http.HttpMessageParseException;
 import http.HttpWriteMessageClosedChannelException;
 import http.HttpWriteMessageException;

@@ -1,4 +1,4 @@
-package http.util;
+package com.shimizukenta.http;
 
 import java.util.Map;
 import java.util.Set;
@@ -16,10 +16,16 @@ public class QueryParseResult {
 	}
 	
 	public String get(CharSequence key) {
+		if ( key == null ) {
+			return null;
+		}
 		return map.get(key.toString());
 	}
 	
 	public boolean containsKey(CharSequence key) {
+		if ( key == null ) {
+			return false;
+		}
 		return map.containsKey(key.toString());
 	}
 	

@@ -2,10 +2,11 @@ package http.util;
 
 import java.net.SocketAddress;
 
-import http.HttpVersion;
+import com.shimizukenta.http.HttpRequestLine;
+import com.shimizukenta.http.HttpVersion;
+
 import http.base.HttpHeaderGroup;
 import http.base.HttpMessageBody;
-import http.base.HttpRequestLine;
 import http.base.HttpRequestMessagePack;
 
 public abstract class HttpRequestMessageBuilder {

@@ -3,10 +3,11 @@ package http.util;
 import java.util.Arrays;
 import java.util.List;
 
-import http.HttpHeaderField;
-import http.HttpMethod;
-import http.HttpVersion;
-import http.base.HttpHeader;
+import com.shimizukenta.http.HttpHeader;
+import com.shimizukenta.http.HttpHeaderField;
+import com.shimizukenta.http.HttpMethod;
+import com.shimizukenta.http.HttpVersion;
+
 import http.base.HttpHeaderGroup;
 import http.base.HttpMessageBody;
 import http.base.HttpRequestMessagePack;

@@ -1,5 +1,7 @@
 package http;
 
+import com.shimizukenta.http.HttpBaseException;
+
 public class HttpMessageParseException extends HttpBaseException {
 
 	private static final long serialVersionUID = -4760328009644230959L;

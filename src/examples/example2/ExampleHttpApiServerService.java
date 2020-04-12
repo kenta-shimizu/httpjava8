@@ -8,15 +8,17 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import http.HttpHeaderField;
+import com.shimizukenta.http.HttpContentType;
+import com.shimizukenta.http.HttpHeader;
+import com.shimizukenta.http.HttpHeaderField;
+import com.shimizukenta.http.HttpMethod;
+import com.shimizukenta.http.HttpStatus;
+import com.shimizukenta.http.HttpVersion;
+import com.shimizukenta.http.QueryParseResult;
+
 import http.HttpMessageParseException;
-import http.HttpMethod;
-import http.HttpStatus;
-import http.HttpVersion;
 import http.HttpWriteMessageException;
 import http.api.HttpApiServerService;
-import http.base.HttpContentType;
-import http.base.HttpHeader;
 import http.base.HttpHeaderGroup;
 import http.base.HttpMessageBody;
 import http.base.HttpMessageWriter;
@@ -25,7 +27,6 @@ import http.base.HttpResponseMessage;
 import http.base.HttpServerConnectionValue;
 import http.util.HttpResponseMessageBuilder;
 import http.util.HttpResponseMessageBuilders;
-import http.util.QueryParseResult;
 
 public class ExampleHttpApiServerService extends HttpApiServerService {
 	

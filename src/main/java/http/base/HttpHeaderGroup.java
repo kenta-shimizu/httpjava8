@@ -9,7 +9,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import http.HttpHeaderField;
+import com.shimizukenta.http.HttpHeader;
+import com.shimizukenta.http.HttpHeaderField;
+
 import http.HttpMessageParseException;
 
 public class HttpHeaderGroup implements Cloneable {

@@ -1,5 +1,7 @@
 package http.base;
 
+import com.shimizukenta.http.HttpStatusLine;
+
 public class HttpResponseMessagePack extends HttpResponseMessage {
 	
 	private final HttpRequestMessagePack request;
