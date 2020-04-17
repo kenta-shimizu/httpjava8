@@ -6,13 +6,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import com.shimizukenta.http.HttpHeaderField;
-import com.shimizukenta.http.HttpStatusLine;
+import com.shimizukenta.httpserver.HttpMessageHeaderField;
+import com.shimizukenta.httpserver.HttpMessageHeaderGroup;
+import com.shimizukenta.httpserver.HttpMessageParseException;
+import com.shimizukenta.httpserver.HttpMessageStatusLine;
 
 import http.base.HttpMessageBodyReadable;
-import http.HttpMessageParseException;
 import http.base.CrLfLineReader;
-import http.base.HttpHeaderGroup;
 import http.base.HttpMessageBytesBodyReader;
 import http.base.HttpMessageChunkBodyReader;
 import http.base.HttpReadMessageException;
@@ -22,9 +22,9 @@ public class HttpResponseMessageReader {
 	
 	private final CrLfLineReader crlfr = new CrLfLineReader(1024);
 	
-	private HttpStatusLine statusLine;
+	private HttpMessageStatusLine statusLine;
 	private final List<String> headers = new ArrayList<>();
-	private HttpHeaderGroup headerGroup;
+	private HttpMessageHeaderGroup headerGroup;
 	private HttpMessageBodyReadable bodyReader;
 
 	public HttpResponseMessageReader() {
@@ -42,7 +42,7 @@ public class HttpResponseMessageReader {
 				if ( statusLine == null ) {
 					
 					crlfr.put(buffer).ifPresent(bs -> {
-						statusLine = new HttpStatusLine(bs);
+						statusLine = new HttpMessageStatusLine(bs);
 					});
 					
 					continue;
@@ -63,7 +63,7 @@ public class HttpResponseMessageReader {
 							
 						} else {
 							
-							headerGroup = HttpHeaderGroup.lines(headers);
+							headerGroup = HttpMessageHeaderGroup.lines(headers);
 							bodyReader = createBodyReader();
 						}
 					}
@@ -92,7 +92,7 @@ public class HttpResponseMessageReader {
 	private HttpMessageBodyReadable createBodyReader() throws HttpMessageParseException {
 		
 		{
-			Optional<String> op = headerGroup.getFieldValue(HttpHeaderField.TransferEncoding);
+			Optional<String> op = headerGroup.getFieldValue(HttpMessageHeaderField.TransferEncoding);
 			
 			if ( op.filter(v -> v.equals("chunked")).isPresent() ) {
 				
@@ -101,7 +101,7 @@ public class HttpResponseMessageReader {
 		}
 		
 		{
-			Optional<String> op = headerGroup.getFieldValue(HttpHeaderField.ContentLength);
+			Optional<String> op = headerGroup.getFieldValue(HttpMessageHeaderField.ContentLength);
 			
 			if ( op.isPresent() ) {
 				

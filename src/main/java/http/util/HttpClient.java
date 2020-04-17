@@ -5,7 +5,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import http.HttpMessageParseException;
+import com.shimizukenta.httpserver.HttpMessageParseException;
+
 import http.HttpWriteMessageClosedChannelException;
 import http.HttpWriteMessageException;
 import http.base.AbstractHttpClient;

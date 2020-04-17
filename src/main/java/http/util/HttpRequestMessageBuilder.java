@@ -2,10 +2,10 @@ package http.util;
 
 import java.net.SocketAddress;
 
-import com.shimizukenta.http.HttpRequestLine;
-import com.shimizukenta.http.HttpVersion;
+import com.shimizukenta.httpserver.HttpMessageHeaderGroup;
+import com.shimizukenta.httpserver.HttpMessageRequestLine;
+import com.shimizukenta.httpserver.HttpVersion;
 
-import http.base.HttpHeaderGroup;
 import http.base.HttpMessageBody;
 import http.base.HttpRequestMessagePack;
 
@@ -19,10 +19,10 @@ public abstract class HttpRequestMessageBuilder {
 			SocketAddress hostSocketAddress
 			, CharSequence method
 			, CharSequence uri
-			, HttpHeaderGroup headerGroup
+			, HttpMessageHeaderGroup headerGroup
 			, HttpMessageBody body) {
 		
-		HttpRequestLine requestLine = new HttpRequestLine(
+		HttpMessageRequestLine requestLine = new HttpMessageRequestLine(
 				method.toString()
 				+ " " + uri.toString()
 				+ " " + getHttpVersion().toString());

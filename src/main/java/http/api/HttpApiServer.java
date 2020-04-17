@@ -3,12 +3,13 @@ package http.api;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import http.HttpMessageParseException;
+import com.shimizukenta.httpserver.HttpMessageParseException;
+import com.shimizukenta.httpserver.HttpServerConnectionValue;
+
 import http.HttpServerServiceSupplier;
 import http.HttpWriteMessageException;
 import http.base.HttpMessageWriter;
 import http.base.HttpRequestMessage;
-import http.base.HttpServerConnectionValue;
 import http.util.HttpServer;
 
 abstract public class HttpApiServer extends HttpServer {

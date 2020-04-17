@@ -14,19 +14,19 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import com.shimizukenta.http.HttpLog;
-import com.shimizukenta.http.HttpStatus;
-import com.shimizukenta.http.HttpVersion;
+import com.shimizukenta.httpserver.HttpKeepAliveValue;
+import com.shimizukenta.httpserver.HttpLog;
+import com.shimizukenta.httpserver.HttpMessageParseException;
+import com.shimizukenta.httpserver.HttpServerConnectionValue;
+import com.shimizukenta.httpserver.HttpStatus;
+import com.shimizukenta.httpserver.HttpVersion;
 
-import http.HttpMessageParseException;
 import http.HttpServerServiceSupplier;
 import http.HttpWriteMessageException;
 import http.base.AbstractHttpServer;
-import http.base.HttpKeepAliveValue;
 import http.base.HttpMessageWriter;
 import http.base.HttpReadMessageException;
 import http.base.HttpRequestMessage;
-import http.base.HttpServerConnectionValue;
 
 public class HttpServer extends AbstractHttpServer {
 	

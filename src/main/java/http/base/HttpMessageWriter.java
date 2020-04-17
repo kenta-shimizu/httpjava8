@@ -12,10 +12,10 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
-import com.shimizukenta.http.HttpLog;
-import com.shimizukenta.http.HttpLogListener;
+import com.shimizukenta.httpserver.HttpLog;
+import com.shimizukenta.httpserver.HttpLogListener;
+import com.shimizukenta.httpserver.HttpMessageParseException;
 
-import http.HttpMessageParseException;
 import http.HttpWriteMessageClosedChannelException;
 import http.HttpWriteMessageException;
 

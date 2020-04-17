@@ -1,6 +1,7 @@
 package http.api;
 
-import http.HttpMessageParseException;
+import com.shimizukenta.httpserver.HttpMessageParseException;
+
 import http.base.HttpRequestMessage;
 import http.util.HttpServerService;
 

@@ -1,6 +1,6 @@
 package http.util;
 
-import com.shimizukenta.http.HttpVersion;
+import com.shimizukenta.httpserver.HttpVersion;
 
 public class HttpResponseMessageBuilders {
 

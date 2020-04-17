@@ -14,21 +14,21 @@ import java.util.List;
 import java.util.zip.Deflater;
 import java.util.zip.GZIPOutputStream;
 
-import com.shimizukenta.http.HttpContentType;
-import com.shimizukenta.http.HttpHeader;
-import com.shimizukenta.http.HttpHeaderField;
-import com.shimizukenta.http.HttpMethod;
-import com.shimizukenta.http.HttpStatus;
-import com.shimizukenta.http.HttpVersion;
+import com.shimizukenta.httpserver.HttpContentType;
+import com.shimizukenta.httpserver.HttpMessageHeader;
+import com.shimizukenta.httpserver.HttpMessageHeaderField;
+import com.shimizukenta.httpserver.HttpMessageHeaderGroup;
+import com.shimizukenta.httpserver.HttpMessageParseException;
+import com.shimizukenta.httpserver.HttpMethod;
+import com.shimizukenta.httpserver.HttpServerConnectionValue;
+import com.shimizukenta.httpserver.HttpStatus;
+import com.shimizukenta.httpserver.HttpVersion;
 
-import http.HttpMessageParseException;
 import http.HttpWriteMessageException;
-import http.base.HttpHeaderGroup;
 import http.base.HttpMessageBody;
 import http.base.HttpMessageWriter;
 import http.base.HttpRequestMessage;
 import http.base.HttpResponseMessage;
-import http.base.HttpServerConnectionValue;
 
 public class HttpGeneralFileServerService extends HttpServerService {
 	
@@ -170,28 +170,28 @@ public class HttpGeneralFileServerService extends HttpServerService {
 		
 		final HttpMethod method = request.requestLine().method();
 		
-		final List<HttpHeader> headers = new ArrayList<>();
+		final List<HttpMessageHeader> headers = new ArrayList<>();
 		
 		config.serverName()
-		.map(s -> new HttpHeader(HttpHeaderField.Server, s))
+		.map(s -> new HttpMessageHeader(HttpMessageHeaderField.Server, s))
 		.ifPresent(headers::add);
 		
-		headers.add(new HttpHeader(HttpHeaderField.AcceptRanges, "bytes"));
+		headers.add(new HttpMessageHeader(HttpMessageHeaderField.AcceptRanges, "bytes"));
 		
 		if ( config.addTimestamps() ) {
 			
 			ZonedDateTime date = ZonedDateTime.now(ZoneId.of("UTC"));
-			headers.add(new HttpHeader(HttpHeaderField.Date, date.format(rfc1123Formatter)));
+			headers.add(new HttpMessageHeader(HttpMessageHeaderField.Date, date.format(rfc1123Formatter)));
 			
 			FileTime ft = Files.getLastModifiedTime(path);
 			ZonedDateTime lmt = ZonedDateTime.ofInstant(ft.toInstant(), ZoneId.of("UTC"));
-			headers.add(new HttpHeader(HttpHeaderField.LastModified, lmt.format(rfc1123Formatter)));
+			headers.add(new HttpMessageHeader(HttpMessageHeaderField.LastModified, lmt.format(rfc1123Formatter)));
 		}
 		
 		headers.addAll(createKeepAliveHeaders(request, connectionValue));
 		
-		headers.add(new HttpHeader(
-				HttpHeaderField.ContentType
+		headers.add(new HttpMessageHeader(
+				HttpMessageHeaderField.ContentType
 				, HttpContentType.get(path).contentType()));
 		
 		byte[] bs = Files.readAllBytes(path);
@@ -213,7 +213,7 @@ public class HttpGeneralFileServerService extends HttpServerService {
 		return createIdentityResponseMessage(bs, headers, method);
 	}
 	
-	private List<HttpHeader> createKeepAliveHeaders(HttpRequestMessage request, HttpServerConnectionValue connectionValue) {
+	private List<HttpMessageHeader> createKeepAliveHeaders(HttpRequestMessage request, HttpServerConnectionValue connectionValue) {
 		
 		if ( request.isKeepAlive() ) {
 			
@@ -224,9 +224,9 @@ public class HttpGeneralFileServerService extends HttpServerService {
 						+ ", max="
 						+ connectionValue.keepAlive().remaining();
 				
-				List<HttpHeader> ll = Arrays.asList(
-						new HttpHeader(HttpHeaderField.KeepAlive, v)
-						, new HttpHeader(HttpHeaderField.Connection, "Keep-Alive")
+				List<HttpMessageHeader> ll = Arrays.asList(
+						new HttpMessageHeader(HttpMessageHeaderField.KeepAlive, v)
+						, new HttpMessageHeader(HttpMessageHeaderField.Connection, "Keep-Alive")
 						);
 				
 				connectionValue.keepAlive().decreaseRemaining();
@@ -235,18 +235,18 @@ public class HttpGeneralFileServerService extends HttpServerService {
 			}
 		}
 		
-		return Arrays.asList(new HttpHeader(HttpHeaderField.Connection, "Close"));
+		return Arrays.asList(new HttpMessageHeader(HttpMessageHeaderField.Connection, "Close"));
 	}
 	
-	protected HttpResponseMessage createIdentityResponseMessage(byte[] body, List<HttpHeader> headers, HttpMethod method) {
+	protected HttpResponseMessage createIdentityResponseMessage(byte[] body, List<HttpMessageHeader> headers, HttpMethod method) {
 		return createBaseResponseMessage(body, headers, method);
 	}
 	
-	protected HttpResponseMessage createGzipResponseMessage(byte[] body, List<HttpHeader> headers, HttpMethod method) throws IOException {
+	protected HttpResponseMessage createGzipResponseMessage(byte[] body, List<HttpMessageHeader> headers, HttpMethod method) throws IOException {
 		
-		List<HttpHeader> hh = new ArrayList<>(headers);
+		List<HttpMessageHeader> hh = new ArrayList<>(headers);
 		
-		hh.add(new HttpHeader(HttpHeaderField.ContentEncoding, "gzip"));
+		hh.add(new HttpMessageHeader(HttpMessageHeaderField.ContentEncoding, "gzip"));
 		
 		try (
 				ByteArrayOutputStream baos = new ByteArrayOutputStream(ByteArrayOutputStreamSize);
@@ -263,11 +263,11 @@ public class HttpGeneralFileServerService extends HttpServerService {
 		}
 	}
 	
-	protected HttpResponseMessage createDeflateResponseMessage(byte[] body, List<HttpHeader> headers, HttpMethod method) throws IOException {
+	protected HttpResponseMessage createDeflateResponseMessage(byte[] body, List<HttpMessageHeader> headers, HttpMethod method) throws IOException {
 		
-		List<HttpHeader> hh = new ArrayList<>(headers);
+		List<HttpMessageHeader> hh = new ArrayList<>(headers);
 		
-		hh.add(new HttpHeader(HttpHeaderField.ContentEncoding, "deflate"));
+		hh.add(new HttpMessageHeader(HttpMessageHeaderField.ContentEncoding, "deflate"));
 		
 		final Deflater comp = new Deflater();
 		
@@ -304,25 +304,25 @@ public class HttpGeneralFileServerService extends HttpServerService {
 		}
 	}
 	
-	protected HttpResponseMessage createBaseResponseMessage(byte[] body, List<HttpHeader> headers, HttpMethod method) {
+	protected HttpResponseMessage createBaseResponseMessage(byte[] body, List<HttpMessageHeader> headers, HttpMethod method) {
 		
-		List<HttpHeader> hh = new ArrayList<>(headers);
+		List<HttpMessageHeader> hh = new ArrayList<>(headers);
 		
-		hh.add(new HttpHeader(HttpHeaderField.ContentLength, String.valueOf(body.length)));
+		hh.add(new HttpMessageHeader(HttpMessageHeaderField.ContentLength, String.valueOf(body.length)));
 		
 		switch ( method ) {
 		case HEAD : {
 			
 			return msgBuilder.build(
 					HttpStatus.OK
-					, HttpHeaderGroup.create(hh));
+					, HttpMessageHeaderGroup.create(hh));
 			/* break; */
 		}
 		case GET : {
 			
 			return msgBuilder.build(
 					HttpStatus.OK
-					, HttpHeaderGroup.create(hh)
+					, HttpMessageHeaderGroup.create(hh)
 					, new HttpMessageBody(body));
 			/* break; */
 		}

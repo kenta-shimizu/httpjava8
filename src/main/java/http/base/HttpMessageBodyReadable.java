@@ -2,7 +2,8 @@ package http.base;
 
 import java.nio.ByteBuffer;
 
-import http.HttpMessageParseException;
+import com.shimizukenta.httpserver.HttpMessageHeaderGroup;
+import com.shimizukenta.httpserver.HttpMessageParseException;
 
 public interface HttpMessageBodyReadable {
 	
@@ -15,5 +16,5 @@ public interface HttpMessageBodyReadable {
 	
 	public boolean completed();
 	public HttpMessageBody getHttpMessageBody();
-	public HttpHeaderGroup trailer();
+	public HttpMessageHeaderGroup trailer();
 }

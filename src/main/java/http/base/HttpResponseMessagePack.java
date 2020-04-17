@@ -1,6 +1,7 @@
 package http.base;
 
-import com.shimizukenta.http.HttpStatusLine;
+import com.shimizukenta.httpserver.HttpMessageHeaderGroup;
+import com.shimizukenta.httpserver.HttpMessageStatusLine;
 
 public class HttpResponseMessagePack extends HttpResponseMessage {
 	
@@ -8,7 +9,7 @@ public class HttpResponseMessagePack extends HttpResponseMessage {
 	
 	public HttpResponseMessagePack(
 			HttpRequestMessagePack request
-			, HttpStatusLine statusLine, HttpHeaderGroup headerGroup, HttpMessageBody body) {
+			, HttpMessageStatusLine statusLine, HttpMessageHeaderGroup headerGroup, HttpMessageBody body) {
 		
 		super(statusLine, headerGroup, body);
 		
@@ -17,7 +18,7 @@ public class HttpResponseMessagePack extends HttpResponseMessage {
 	
 	public HttpResponseMessagePack(
 			HttpRequestMessagePack request
-			, HttpStatusLine statusLine, HttpHeaderGroup headerGroup) {
+			, HttpMessageStatusLine statusLine, HttpMessageHeaderGroup headerGroup) {
 		
 		this(request, statusLine, headerGroup, HttpMessageBody.empty());
 	}

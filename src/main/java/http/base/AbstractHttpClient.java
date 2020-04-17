@@ -3,7 +3,8 @@ package http.base;
 import java.util.Collection;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import http.HttpMessageParseException;
+import com.shimizukenta.httpserver.HttpMessageParseException;
+
 import http.HttpWriteMessageException;
 
 public abstract class AbstractHttpClient extends AbstractHttpTerminalEntity {

@@ -3,6 +3,8 @@ package http.base;
 import java.io.ByteArrayOutputStream;
 import java.nio.ByteBuffer;
 
+import com.shimizukenta.httpserver.HttpMessageHeaderGroup;
+
 public class HttpMessageBytesBodyReader implements HttpMessageBodyReadable {
 	
 	private final ByteArrayOutputStream os;
@@ -57,8 +59,8 @@ public class HttpMessageBytesBodyReader implements HttpMessageBodyReadable {
 	}
 
 	@Override
-	public HttpHeaderGroup trailer() {
-		return HttpHeaderGroup.empty();
+	public HttpMessageHeaderGroup trailer() {
+		return HttpMessageHeaderGroup.empty();
 	}
 	
 }

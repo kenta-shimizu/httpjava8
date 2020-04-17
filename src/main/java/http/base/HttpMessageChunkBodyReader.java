@@ -9,7 +9,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import http.HttpMessageParseException;
+import com.shimizukenta.httpserver.HttpMessageHeaderGroup;
+import com.shimizukenta.httpserver.HttpMessageParseException;
 
 public class HttpMessageChunkBodyReader implements HttpMessageBodyReadable {
 	
@@ -23,7 +24,7 @@ public class HttpMessageChunkBodyReader implements HttpMessageBodyReadable {
 	private boolean lastChunk;
 	private int chunkDataSize;
 	
-	private HttpHeaderGroup headerGroup;
+	private HttpMessageHeaderGroup headerGroup;
 	
 	public HttpMessageChunkBodyReader() {
 		super();
@@ -136,7 +137,7 @@ public class HttpMessageChunkBodyReader implements HttpMessageBodyReadable {
 	}
 
 	@Override
-	public HttpHeaderGroup trailer() {
+	public HttpMessageHeaderGroup trailer() {
 		
 		synchronized ( this ) {
 			
@@ -150,7 +151,7 @@ public class HttpMessageChunkBodyReader implements HttpMessageBodyReadable {
 						.map(bs -> new String(bs, StandardCharsets.US_ASCII))
 						.collect(Collectors.toList());
 				
-				headerGroup = HttpHeaderGroup.lines(lines);
+				headerGroup = HttpMessageHeaderGroup.lines(lines);
 			}
 			
 			return headerGroup;

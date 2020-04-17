@@ -3,12 +3,12 @@ package http.util;
 import java.util.Arrays;
 import java.util.List;
 
-import com.shimizukenta.http.HttpHeader;
-import com.shimizukenta.http.HttpHeaderField;
-import com.shimizukenta.http.HttpMethod;
-import com.shimizukenta.http.HttpVersion;
+import com.shimizukenta.httpserver.HttpMessageHeader;
+import com.shimizukenta.httpserver.HttpMessageHeaderField;
+import com.shimizukenta.httpserver.HttpMessageHeaderGroup;
+import com.shimizukenta.httpserver.HttpMethod;
+import com.shimizukenta.httpserver.HttpVersion;
 
-import http.base.HttpHeaderGroup;
 import http.base.HttpMessageBody;
 import http.base.HttpRequestMessagePack;
 
@@ -36,7 +36,7 @@ public class HttpRequestMessageBuilderVersion1p0 extends HttpRequestMessageBuild
 				r.serverSocketAddress()
 				, HttpMethod.GET.toString()
 				, r.requestLineUri()
-				, HttpHeaderGroup.empty()
+				, HttpMessageHeaderGroup.empty()
 				, HttpMessageBody.empty());
 	}
 
@@ -49,7 +49,7 @@ public class HttpRequestMessageBuilderVersion1p0 extends HttpRequestMessageBuild
 				r.serverSocketAddress()
 				, HttpMethod.HEAD.toString()
 				, r.requestLineUri()
-				, HttpHeaderGroup.empty()
+				, HttpMessageHeaderGroup.empty()
 				, HttpMessageBody.empty());
 	}
 
@@ -58,15 +58,15 @@ public class HttpRequestMessageBuilderVersion1p0 extends HttpRequestMessageBuild
 		
 		AbsoluteUriParseResult r = parseUri(absoluteUri);
 		
-		List<HttpHeader> headers = Arrays.asList(
-				new HttpHeader(HttpHeaderField.ContentLength, String.valueOf(body.getBytes().length))
+		List<HttpMessageHeader> headers = Arrays.asList(
+				new HttpMessageHeader(HttpMessageHeaderField.ContentLength, String.valueOf(body.getBytes().length))
 				);
 		
 		return this.build(
 				r.serverSocketAddress()
 				, HttpMethod.POST.toString()
 				, r.requestLineUri()
-				, HttpHeaderGroup.create(headers)
+				, HttpMessageHeaderGroup.create(headers)
 				, body);
 	}
 

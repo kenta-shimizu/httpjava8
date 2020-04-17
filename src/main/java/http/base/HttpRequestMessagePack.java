@@ -2,7 +2,8 @@ package http.base;
 
 import java.net.SocketAddress;
 
-import com.shimizukenta.http.HttpRequestLine;
+import com.shimizukenta.httpserver.HttpMessageHeaderGroup;
+import com.shimizukenta.httpserver.HttpMessageRequestLine;
 
 public class HttpRequestMessagePack extends HttpRequestMessage {
 	
@@ -10,7 +11,7 @@ public class HttpRequestMessagePack extends HttpRequestMessage {
 	
 	public HttpRequestMessagePack(
 			SocketAddress serverSocketAddress
-			, HttpRequestLine requestLine, HttpHeaderGroup headerGroup, HttpMessageBody body) {
+			, HttpMessageRequestLine requestLine, HttpMessageHeaderGroup headerGroup, HttpMessageBody body) {
 		
 		super(requestLine, headerGroup, body);
 		
