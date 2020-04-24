@@ -1,7 +1,7 @@
 package http.base;
 
-import com.shimizukenta.httpserver.HttpMessageHeaderGroup;
-import com.shimizukenta.httpserver.HttpMessageStatusLine;
+import com.shimizukenta.http.HttpMessageHeaderGroup;
+import com.shimizukenta.http.HttpMessageStatusLine;
 
 public class HttpResponseMessagePack extends HttpResponseMessage {
 	

@@ -14,8 +14,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
 
-import com.shimizukenta.httpserver.HttpLog;
-import com.shimizukenta.httpserver.HttpLogListener;
+import com.shimizukenta.http.HttpLog;
+import com.shimizukenta.http.HttpLogListener;
 
 import http.base.HttpResponseMessagePack;
 import http.base.HttpResponseMessagePackListener;

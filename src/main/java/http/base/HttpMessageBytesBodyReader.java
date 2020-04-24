@@ -3,7 +3,7 @@ package http.base;
 import java.io.ByteArrayOutputStream;
 import java.nio.ByteBuffer;
 
-import com.shimizukenta.httpserver.HttpMessageHeaderGroup;
+import com.shimizukenta.http.HttpMessageHeaderGroup;
 
 public class HttpMessageBytesBodyReader implements HttpMessageBodyReadable {
 	

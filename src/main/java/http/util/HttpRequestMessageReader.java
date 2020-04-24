@@ -6,10 +6,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import com.shimizukenta.httpserver.HttpMessageHeaderField;
-import com.shimizukenta.httpserver.HttpMessageHeaderGroup;
-import com.shimizukenta.httpserver.HttpMessageParseException;
-import com.shimizukenta.httpserver.HttpMessageRequestLine;
+import com.shimizukenta.http.HttpMessageHeaderField;
+import com.shimizukenta.http.HttpMessageHeaderGroup;
+import com.shimizukenta.http.HttpMessageParseException;
+import com.shimizukenta.http.HttpMessageRequestLine;
 
 import http.base.HttpMessageBodyReadable;
 import http.base.CrLfLineReader;

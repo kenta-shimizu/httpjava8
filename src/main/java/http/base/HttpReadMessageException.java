@@ -1,6 +1,6 @@
 package http.base;
 
-import com.shimizukenta.httpserver.HttpBaseException;
+import com.shimizukenta.http.HttpBaseException;
 
 public class HttpReadMessageException extends HttpBaseException {
 

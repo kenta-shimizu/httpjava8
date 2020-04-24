@@ -1,9 +1,9 @@
 package http.util;
 
-import com.shimizukenta.httpserver.HttpMessageHeaderGroup;
-import com.shimizukenta.httpserver.HttpMessageStatusLine;
-import com.shimizukenta.httpserver.HttpStatus;
-import com.shimizukenta.httpserver.HttpVersion;
+import com.shimizukenta.http.HttpMessageHeaderGroup;
+import com.shimizukenta.http.HttpMessageStatusLine;
+import com.shimizukenta.http.HttpStatus;
+import com.shimizukenta.http.HttpVersion;
 
 import http.base.HttpMessageBody;
 import http.base.HttpResponseMessage;

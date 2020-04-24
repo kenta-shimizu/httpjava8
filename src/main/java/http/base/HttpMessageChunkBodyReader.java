@@ -9,8 +9,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import com.shimizukenta.httpserver.HttpMessageHeaderGroup;
-import com.shimizukenta.httpserver.HttpMessageParseException;
+import com.shimizukenta.http.HttpMessageHeaderGroup;
+import com.shimizukenta.http.HttpMessageParseException;
 
 public class HttpMessageChunkBodyReader implements HttpMessageBodyReadable {
 	

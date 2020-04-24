@@ -3,8 +3,8 @@ package http.api;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import com.shimizukenta.httpserver.HttpMessageParseException;
-import com.shimizukenta.httpserver.HttpServerConnectionValue;
+import com.shimizukenta.http.HttpMessageParseException;
+import com.shimizukenta.http.HttpServerConnectionValue;
 
 import http.HttpServerServiceSupplier;
 import http.HttpWriteMessageException;

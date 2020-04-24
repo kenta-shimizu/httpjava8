@@ -3,7 +3,7 @@ package http.base;
 import java.util.Collection;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import com.shimizukenta.httpserver.HttpMessageParseException;
+import com.shimizukenta.http.HttpMessageParseException;
 
 import http.HttpWriteMessageException;
 

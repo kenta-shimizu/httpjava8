@@ -2,8 +2,8 @@ package http.base;
 
 import java.nio.ByteBuffer;
 
-import com.shimizukenta.httpserver.HttpMessageHeaderGroup;
-import com.shimizukenta.httpserver.HttpMessageParseException;
+import com.shimizukenta.http.HttpMessageHeaderGroup;
+import com.shimizukenta.http.HttpMessageParseException;
 
 public interface HttpMessageBodyReadable {
 	

@@ -2,9 +2,9 @@ package http.util;
 
 import java.net.SocketAddress;
 
-import com.shimizukenta.httpserver.HttpMessageHeaderGroup;
-import com.shimizukenta.httpserver.HttpMessageRequestLine;
-import com.shimizukenta.httpserver.HttpVersion;
+import com.shimizukenta.http.HttpMessageHeaderGroup;
+import com.shimizukenta.http.HttpMessageRequestLine;
+import com.shimizukenta.http.HttpVersion;
 
 import http.base.HttpMessageBody;
 import http.base.HttpRequestMessagePack;

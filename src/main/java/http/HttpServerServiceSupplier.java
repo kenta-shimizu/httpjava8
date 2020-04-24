@@ -1,7 +1,7 @@
 package http;
 
-import com.shimizukenta.httpserver.HttpMessageParseException;
-import com.shimizukenta.httpserver.HttpServerConnectionValue;
+import com.shimizukenta.http.HttpMessageParseException;
+import com.shimizukenta.http.HttpServerConnectionValue;
 
 import http.base.HttpMessageWriter;
 import http.base.HttpRequestMessage;

@@ -3,11 +3,11 @@ package http.util;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.shimizukenta.httpserver.HttpContentType;
-import com.shimizukenta.httpserver.HttpMessageHeader;
-import com.shimizukenta.httpserver.HttpMessageHeaderField;
-import com.shimizukenta.httpserver.HttpMessageHeaderGroup;
-import com.shimizukenta.httpserver.HttpVersion;
+import com.shimizukenta.http.HttpContentType;
+import com.shimizukenta.http.HttpMessageHeader;
+import com.shimizukenta.http.HttpMessageHeaderField;
+import com.shimizukenta.http.HttpMessageHeaderGroup;
+import com.shimizukenta.http.HttpVersion;
 
 import http.base.HttpMessageBody;
 import http.base.HttpResponseMessage;
