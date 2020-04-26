@@ -1,12 +1,38 @@
 package com.shimizukenta.http;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public abstract class AbstractHttpServer implements HttpServer {
 	
 	public AbstractHttpServer() {
 		/* Nothing */
+	}
+	
+	
+	private final List<HttpServerService> services = new ArrayList<>();
+	
+	@Override
+	public boolean addServerService(HttpServerService s) {
+		synchronized ( services ) {
+			return services.add(s);
+		}
+	}
+	
+	@Override
+	public boolean removeServerService(HttpServerService s) {
+		synchronized ( services ) {
+			return services.remove(s);
+		}
+	}
+	
+	protected List<HttpServerService> services() {
+		synchronized ( services ) {
+			return Collections.unmodifiableList(services);
+		}
 	}
 	
 	

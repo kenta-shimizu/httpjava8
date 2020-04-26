@@ -43,9 +43,9 @@ public class Test1 {
 				HttpMessageHeaderField.AcceptEncoding,
 				"gzip;q=0.9, deflate;q=0.8"));
 		
-//		headers.add(HttpMessageHeader.create(
-//				HttpMessageHeaderField.Origin,
-//				"localhost"));
+		headers.add(HttpMessageHeader.create(
+				HttpMessageHeaderField.Origin,
+				"localhost"));
 		
 		HttpRequestMessage reqMsg = new HttpRequestMessage(
 				requestLine,
