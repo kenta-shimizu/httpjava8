@@ -9,6 +9,26 @@ public abstract class AbstractHttpServerService implements HttpServerService {
 		/* Nothing */
 	}
 	
+	protected void write(
+			HttpMessageWriter writer,
+			HttpResponseMessage responseMsg,
+			HttpRequestMessageInformation requestInfo)
+					throws InterruptedException, HttpWriteException {
+		
+		putLogs(responseMsg, requestInfo);
+		writer.write(responseMsg);
+	}
+	
+	protected void putLogs(HttpResponseMessage responseMsg, HttpRequestMessageInformation requestInfo) {
+		
+		HttpResponseMessageLog rspLog =	HttpResponseMessageLog.from(
+				responseMsg,
+				requestInfo.getLocalAddress(),
+				requestInfo.getRemoteAddress());
+		
+		putResponseMessageLog(rspLog);
+		putAccessLog(new HttpAccessLog(requestInfo.log(), rspLog));
+	}
 	
 	private final Collection<HttpLogListener> logListeners = new CopyOnWriteArrayList<>();
 	

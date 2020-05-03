@@ -15,6 +15,8 @@ import java.util.concurrent.TimeUnit;
 
 public class HttpVersion1p1AsynchronousSocketChannelServer extends AbstractHttpServer {
 	
+	private static final long reconnectSeconds = 5L;
+	
 	private final ExecutorService execServ = Executors.newCachedThreadPool(r -> {
 		Thread th = new Thread(r);
 		th.setDaemon(true);
@@ -60,9 +62,11 @@ public class HttpVersion1p1AsynchronousSocketChannelServer extends AbstractHttpS
 	public void close() throws IOException {
 		
 		synchronized ( this ) {
+			
 			if ( this.closed ) {
 				return;
 			}
+			
 			this.closed = true;
 		}
 		
@@ -100,6 +104,8 @@ public class HttpVersion1p1AsynchronousSocketChannelServer extends AbstractHttpS
 						
 						server.bind(addr);
 						
+						putLog(new HttpLog("Server-bind", addr));
+						
 						server.accept(null, new CompletionHandler<AsynchronousSocketChannel, Void>() {
 
 							@Override
@@ -107,8 +113,13 @@ public class HttpVersion1p1AsynchronousSocketChannelServer extends AbstractHttpS
 								
 								server.accept(null, this);
 								
+								final String channelStr = channel.toString();
+								
+								putLog(new HttpLog("Channel-accepted", channelStr));
+								
 								final HttpServerConnectionValue connectionValue = createServerConnectionValue(channel);
 								final HttpMessageWriter writer = new AsynchronousSocketChannelHttpMessageWriter(channel);
+								final HttpRequestMessageReader reader = new AsynchronousSocketChannelHttpRequestMessageReader(channel, config.keepAliveTimeout());
 								
 								final Collection<Callable<Object>> tasks = Arrays.asList(
 										() -> {
@@ -125,15 +136,23 @@ public class HttpVersion1p1AsynchronousSocketChannelServer extends AbstractHttpS
 										() -> {
 											
 											try {
+												
+												final SocketAddress localAddr = channel.getLocalAddress();
+												final SocketAddress remoteAddr = channel.getRemoteAddress();
+
 												for ( ;; ) {
 													
-													final HttpRequestMessage request = readRequest(channel);
+													final HttpRequestMessage request = reader.read();
 													
 													if ( request == null ) {
 														break;
 													}
 													
-													boolean keepAlive = tryService(writer, request, connectionValue);
+													final HttpRequestMessageInformation reqInfo = HttpRequestMessageInformation.from(request, localAddr, remoteAddr);
+													
+													putRequestMessageLog(reqInfo.log());
+													
+													boolean keepAlive = tryService(writer, reqInfo, connectionValue);
 													
 													if ( ! keepAlive ) {
 														break;
@@ -141,6 +160,9 @@ public class HttpVersion1p1AsynchronousSocketChannelServer extends AbstractHttpS
 												}
 											}
 											catch ( InterruptedException ignore ) {
+											}
+											catch ( HttpReadException | HttpWriteException | IOException e) {
+												putLog(e);
 											}
 											
 											return null;
@@ -151,10 +173,7 @@ public class HttpVersion1p1AsynchronousSocketChannelServer extends AbstractHttpS
 									execServ.invokeAny(tasks);
 								}
 								catch (ExecutionException e ) {
-									
-									//TODO
-									
-									putLog(new HttpLog(e));
+									putLog(e.getCause());
 								}
 								catch ( InterruptedException ignore ) {
 								}
@@ -169,15 +188,18 @@ public class HttpVersion1p1AsynchronousSocketChannelServer extends AbstractHttpS
 									try {
 										channel.close();
 									}
-									catch ( IOException giveup ) {
+									catch ( IOException e ) {
+										putLog(e);
 									}
 								}
+								
+								putLog(new HttpLog("Channel-closed", channelStr));
 							}
 
 							@Override
 							public void failed(Throwable t, Void attachment) {
 								
-								putLog(new HttpLog(t));
+								putLog(t);
 								
 								synchronized ( server ) {
 									server.notifyAll();
@@ -190,8 +212,10 @@ public class HttpVersion1p1AsynchronousSocketChannelServer extends AbstractHttpS
 						}
 					}
 					catch ( IOException e ) {
-						putLog(new HttpLog(e));
+						putLog(e);
 					}
+					
+					TimeUnit.SECONDS.sleep(reconnectSeconds);
 				}
 			}
 			catch ( InterruptedException ignore ) {
@@ -199,27 +223,59 @@ public class HttpVersion1p1AsynchronousSocketChannelServer extends AbstractHttpS
 		});
 	}
 	
-	private HttpRequestMessage readRequest(AsynchronousSocketChannel channel) throws InterruptedException {
-		
-		//TODO
-		
-		return null;
-	}
-	
 	private boolean tryService(
 			HttpMessageWriter writer,
-			HttpRequestMessage request,
+			HttpRequestMessageInformation requestInfo,
 			HttpServerConnectionValue connectionValue)
 					throws InterruptedException, HttpWriteException {
 		
 		for ( HttpServerService s : this.services() ) {
-			if ( s.accept(request) ) {
-				return s.tryService(writer, request, connectionValue);
+			if ( s.accept(requestInfo) ) {
+				return s.tryService(writer, requestInfo, connectionValue);
 			}
 		}
 		
-		writer.write(msgBuilder.build(HttpStatus.INTERNAL_SERVER_ERROR));
+		return responseInternalServerError(writer, requestInfo);
+	}
+	
+	private boolean responseInternalServerError(
+			HttpMessageWriter writer,
+			HttpRequestMessageInformation requestInfo)
+					throws InterruptedException, HttpWriteException {
+		
+		HttpResponseMessage rspMsg = msgBuilder.build(HttpStatus.INTERNAL_SERVER_ERROR);
+		
+		HttpResponseMessageLog rspLog =	HttpResponseMessageLog.from(
+				rspMsg,
+				requestInfo.getLocalAddress(),
+				requestInfo.getRemoteAddress());
+		
+		putResponseMessageLog(rspLog);
+		putAccessLog(new HttpAccessLog(requestInfo.log(), rspLog));
+		
+		writer.write(rspMsg);
+		
 		return false;
+	}
+	
+	@Override
+	public boolean addServerService(HttpServerService s) {
+		s.addLogListener(this::putLog);
+		s.addResponseMessageLogListener(this::putResponseMessageLog);
+		s.addAccessLogListener(this::putAccessLog);
+		return super.addServerService(s);
+	}
+	
+	@Override
+	public boolean removeServerService(HttpServerService s) {
+		s.removeLogListener(this::putLog);
+		s.removeResponseMessageLogListener(this::putResponseMessageLog);
+		s.removeAccessLogListener(this::putAccessLog);
+		return super.removeServerService(s);
+	}
+	
+	private void putLog(Throwable t) {
+		putLog(new HttpLog(t));
 	}
 
 }

@@ -4,15 +4,15 @@ public interface HttpServerService {
 	
 	/**
 	 * 
-	 * @param request
+	 * @param requestInfomation
 	 * @return true if acceptable request
 	 */
-	public boolean accept(HttpRequestMessage request);
+	public boolean accept(HttpRequestMessageInformation requestInfo);
 	
 	/**
 	 * 
 	 * @param writer
-	 * @param request
+	 * @param requestInformation
 	 * @param connectionValue
 	 * @return true if Connection is Keep-Alive
 	 * @throws InterruptedException
@@ -20,7 +20,7 @@ public interface HttpServerService {
 	 */
 	public boolean tryService(
 			HttpMessageWriter writer,
-			HttpRequestMessage request,
+			HttpRequestMessageInformation requestInfo,
 			HttpServerConnectionValue connectionValue)
 					throws InterruptedException, HttpWriteException;
 	

@@ -76,11 +76,11 @@ public class HttpRequestMessage extends AbstractHttpMessage {
 				
 				final StringBuilder sb = new StringBuilder();
 				
-				sb.append(this.requestLine.line())
+				sb.append(this.requestLine.line().trim())
 				.append(BR);
 				
 				for ( String line : headerGroup().lines() ) {
-					sb.append(line)
+					sb.append(line.trim())
 					.append(BR);
 				}
 				

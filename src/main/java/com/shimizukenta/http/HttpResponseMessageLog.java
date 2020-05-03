@@ -6,22 +6,23 @@ import java.time.format.DateTimeFormatter;
 
 public class HttpResponseMessageLog {
 	
+	private final HttpResponseMessage rspMsg;
 	private final LocalDateTime timestamp;
 	private final SocketAddress localAddr;
 	private final SocketAddress remoteAddr;
-	private final HttpResponseMessage rspMsg;
 	
 	private String cacheToString;
 	
 	private HttpResponseMessageLog(
+			HttpResponseMessage responseMessage,
+			LocalDateTime timestamp,
 			SocketAddress localAddress,
-			SocketAddress remoteAddress,
-			HttpResponseMessage responseMessage) {
+			SocketAddress remoteAddress) {
 		
+		this.rspMsg = responseMessage;
 		this.timestamp = LocalDateTime.now();
 		this.localAddr = localAddress;
 		this.remoteAddr = remoteAddress;
-		this.rspMsg = responseMessage;
 		this.cacheToString = null;
 	}
 	
@@ -63,11 +64,11 @@ public class HttpResponseMessageLog {
 				.append(SPACE)
 				.append(remoteAddr.toString())
 				.append(BR)
-				.append(rspMsg.statusLine())
+				.append(rspMsg.statusLine().line().trim())
 				.append(BR);
 				
 				rspMsg.headerGroup().lines().forEach(line -> {
-					sb.append(line)
+					sb.append(line.trim())
 					.append(BR);
 				});
 				
@@ -82,11 +83,15 @@ public class HttpResponseMessageLog {
 	}
 	
 	public static HttpResponseMessageLog from(
+			HttpResponseMessage responseMessage,
 			SocketAddress localAddress,
-			SocketAddress remoteAddress,
-			HttpResponseMessage responseMessage) {
+			SocketAddress remoteAddress) {
 		
-		return new HttpResponseMessageLog(localAddress, remoteAddress, responseMessage);
+		return new HttpResponseMessageLog(
+				responseMessage,
+				LocalDateTime.now(),
+				localAddress,
+				remoteAddress);
 	}
 	
 }

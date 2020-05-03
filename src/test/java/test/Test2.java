@@ -1,6 +1,7 @@
 package test;
 
 import java.io.IOException;
+import java.net.InetSocketAddress;
 
 import com.shimizukenta.http.HttpVersion1p1AsynchronousSocketChannelServer;
 import com.shimizukenta.http.HttpVersion1p1AsynchronousSocketChannelServerConfig;
@@ -15,10 +16,17 @@ public class Test2 {
 		
 		HttpVersion1p1AsynchronousSocketChannelServerConfig config = new HttpVersion1p1AsynchronousSocketChannelServerConfig();
 		
-		HttpVersion1p1AsynchronousSocketChannelServer server = new HttpVersion1p1AsynchronousSocketChannelServer(config);
+		config.addBind(new InetSocketAddress("127.0.0.1", 8080));
 		
-		
-		try {
+		try (
+				HttpVersion1p1AsynchronousSocketChannelServer server = new HttpVersion1p1AsynchronousSocketChannelServer(config);
+				) {
+			
+			server.addLogListener(log -> {echo(log);});
+//			server.addRequestMessageLogListener(log -> {echo(log);});
+//			server.addResponseMessageLogListener(log -> {echo(log);});
+			server.addAccessLogListener(log -> {echo(log);});
+			
 			server.open();
 			
 			synchronized ( Test2.class ) {
@@ -37,12 +45,15 @@ public class Test2 {
 	
 	private static void echo(Object o) {
 		
-		if ( o instanceof Throwable ) {
-			((Throwable) o).printStackTrace();
-		} else {
-			System.out.println(o);
+		synchronized ( syncEcho ) {
+			
+			if ( o instanceof Throwable ) {
+				((Throwable) o).printStackTrace();
+			} else {
+				System.out.println(o);
+			}
+			System.out.println();
 		}
-		System.out.println();
 	}
 
 }

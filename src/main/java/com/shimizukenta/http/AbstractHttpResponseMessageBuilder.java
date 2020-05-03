@@ -160,8 +160,4 @@ public abstract class AbstractHttpResponseMessageBuilder implements HttpResponse
 		.ifPresent(headers::add);
 	}
 	
-	
-	//TODO
-	//keep-alive
-	
 }

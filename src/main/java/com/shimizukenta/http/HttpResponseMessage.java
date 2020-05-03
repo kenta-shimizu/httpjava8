@@ -100,11 +100,11 @@ public class HttpResponseMessage extends AbstractHttpMessage {
 				
 				final StringBuilder sb = new StringBuilder();
 				
-				sb.append(this.statusLine.line())
+				sb.append(this.statusLine.line().trim())
 				.append(BR);
 				
 				for ( String line : headerGroup().lines() ) {
-					sb.append(line)
+					sb.append(line.trim())
 					.append(BR);
 				}
 				

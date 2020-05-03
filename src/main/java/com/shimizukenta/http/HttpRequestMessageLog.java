@@ -14,14 +14,15 @@ public class HttpRequestMessageLog {
 	private String cacheToString;
 	
 	public HttpRequestMessageLog(
+		HttpRequestMessage requestMessage,
+		LocalDateTime timestamp,
 		SocketAddress localAddress,
-		SocketAddress remoteAddress,
-		HttpRequestMessage requestMessage) {
+		SocketAddress remoteAddress) {
 		
-		this.timestamp = LocalDateTime.now();
+		this.reqMsg = requestMessage;
+		this.timestamp = timestamp;
 		this.localAddr = localAddress;
 		this.remoteAddr = remoteAddress;
-		this.reqMsg = requestMessage;
 		this.cacheToString = null;
 	}
 	
@@ -63,11 +64,11 @@ public class HttpRequestMessageLog {
 				.append(SPACE)
 				.append(remoteAddr.toString())
 				.append(BR)
-				.append(reqMsg.requestLine())
+				.append(reqMsg.requestLine().line().trim())
 				.append(BR);
 				
 				reqMsg.headerGroup().lines().forEach(line -> {
-					sb.append(line)
+					sb.append(line.trim())
 					.append(BR);
 				});
 				
@@ -82,11 +83,16 @@ public class HttpRequestMessageLog {
 	}
 	
 	public static HttpRequestMessageLog from(
+			HttpRequestMessage requestMessage,
 			SocketAddress localAddress,
-			SocketAddress remoteAddress,
-			HttpRequestMessage requestMessage) {
+			SocketAddress remoteAddress
+			) {
 		
-		return new HttpRequestMessageLog(localAddress, remoteAddress, requestMessage);
+		return new HttpRequestMessageLog(
+				requestMessage,
+				LocalDateTime.now(),
+				localAddress,
+				remoteAddress);
 	}
 	
 }

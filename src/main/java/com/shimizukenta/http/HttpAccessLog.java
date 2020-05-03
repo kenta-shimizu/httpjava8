@@ -39,7 +39,7 @@ public class HttpAccessLog {
 				
 				sb.append(this.request.timestamp().format(DATETIME))
 				.append(SPACE)
-				.append(this.request.requestMessage().requestLine())
+				.append(this.request.requestMessage().requestLine().line().trim())
 				.append(BR)
 				.append(this.response.timestamp().format(DATETIME))
 				.append(SPACE)
