@@ -42,9 +42,9 @@ public class HttpMessageRequestLine {
 		}
 		
 		return new HttpMessageRequestLine(
-				HttpMethod.get(ss[0]),
+				HttpMethod.get(ss[0].trim()),
 				ss[1],
-				HttpVersion.get(ss[2]),
+				HttpVersion.get(ss[2].trim()),
 				strLine);
 	}
 	

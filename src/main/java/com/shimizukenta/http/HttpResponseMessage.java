@@ -72,7 +72,8 @@ public class HttpResponseMessage extends AbstractHttpMessage {
 			return false;
 			/* break; */
 		}
-		case HTTP_1_1: {
+		case HTTP_1_1:
+		case HTTP_2_0: {
 			
 			String connection = headerGroup()
 					.getFieldValue(HttpMessageHeaderField.Connection)

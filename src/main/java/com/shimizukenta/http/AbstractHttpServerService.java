@@ -46,6 +46,10 @@ public abstract class AbstractHttpServerService implements HttpServerService {
 		logListeners.forEach(l -> {l.receive(log);});
 	}
 	
+	protected void putLog(Throwable t) {
+		putLog(new HttpLog(t));
+	}
+	
 	private final Collection<HttpResponseMessageLogListener> rspMsgLogListeners = new CopyOnWriteArrayList<>();
 
 	@Override

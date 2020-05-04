@@ -1,6 +1,5 @@
 package com.shimizukenta.http;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -13,26 +12,30 @@ public abstract class AbstractHttpServer implements HttpServer {
 	}
 	
 	
-	private final List<HttpServerService> services = new ArrayList<>();
+	private final List<HttpServerService> services = new CopyOnWriteArrayList<>();
 	
 	@Override
 	public boolean addServerService(HttpServerService s) {
-		synchronized ( services ) {
-			return services.add(s);
-		}
+		return services.add(s);
+	}
+	
+	@Override
+	public void addServerService(int index, HttpServerService s) {
+		services.add(index, s);
 	}
 	
 	@Override
 	public boolean removeServerService(HttpServerService s) {
-		synchronized ( services ) {
-			return services.remove(s);
-		}
+		return services.remove(s);
+	}
+	
+	@Override
+	public HttpServerService removeServerService(int index) {
+		return services.remove(index);
 	}
 	
 	protected List<HttpServerService> services() {
-		synchronized ( services ) {
-			return Collections.unmodifiableList(services);
-		}
+		return Collections.unmodifiableList(services);
 	}
 	
 	
@@ -52,6 +55,9 @@ public abstract class AbstractHttpServer implements HttpServer {
 		logListeners.forEach(l -> {l.receive(log);});
 	}
 	
+	protected void putLog(Throwable t) {
+		putLog(new HttpLog(t));
+	}
 	
 	private final Collection<HttpRequestMessageLogListener> reqMsgLogListeners = new CopyOnWriteArrayList<>();
 	

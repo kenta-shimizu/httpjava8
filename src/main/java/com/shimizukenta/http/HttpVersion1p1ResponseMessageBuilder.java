@@ -29,13 +29,25 @@ public class HttpVersion1p1ResponseMessageBuilder extends AbstractHttpResponseMe
 		
 		try {
 			
-			if ( ! Files.exists(path) ) {
+			if (
+					Files.exists(path)
+					&& ! Files.isDirectory(path)
+					) {
+				
+				if ( Files.isReadable(path) ) {
+					
+					byte[] body = Files.readAllBytes(path);
+					return fromInner(request, connectionValue, body, type, path);
+					
+				} else {
+					
+					return build(HttpStatus.FORBIDDEN);
+				}
+				
+			} else {
+				
 				return build(HttpStatus.NOT_FOUND);
 			}
-			
-			byte[] body = Files.readAllBytes(path);
-			
-			return fromInner(request, connectionValue, body, type, path);
 		}
 		catch ( IOException e ) {
 			return build(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -128,15 +140,21 @@ public class HttpVersion1p1ResponseMessageBuilder extends AbstractHttpResponseMe
 			
 			final HttpMessageHeaderGroup headerGroup = HttpMessageHeaderGroup.create(headers);
 			
-			HttpMethod method = request.requestLine().method();
-			
-			if ( method == HttpMethod.HEAD ) {
+			switch ( request.requestLine().method() ) {
+			case HEAD: {
 				
 				return build(HttpStatus.OK, headerGroup);
-				
-			} else {
+				/* break; */
+			}
+			case GET: {
 				
 				return build(HttpStatus.OK, headerGroup, msgBody);
+				/* break; */
+			}
+			default: {
+				
+				return build(HttpStatus.NOT_ACCEPTABLE);
+			}
 			}
 		}
 		catch ( IOException e ) {
@@ -230,11 +248,9 @@ public class HttpVersion1p1ResponseMessageBuilder extends AbstractHttpResponseMe
 			List<HttpMessageHeader> headers,
 			HttpRequestMessage request) {
 		
-		String origin = request.headerGroup()
-				.getFieldValue(HttpMessageHeaderField.Origin)
-				.orElse("");
-		
-		if ( ! origin.isEmpty() ) {
+		request.headerGroup()
+		.getFieldValue(HttpMessageHeaderField.Origin)
+		.ifPresent(origin -> {
 			
 			if ( config.acceptControlAllowOrigin() ) {
 				
@@ -249,7 +265,7 @@ public class HttpVersion1p1ResponseMessageBuilder extends AbstractHttpResponseMe
 							"true"));
 				}
 			}
-		}
+		});
 	}
 	
 }

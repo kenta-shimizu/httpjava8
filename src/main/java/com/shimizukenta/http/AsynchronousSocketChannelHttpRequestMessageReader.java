@@ -88,12 +88,15 @@ public class AsynchronousSocketChannelHttpRequestMessageReader extends AbstractH
 				throw new HttpReadException(e);
 			}
 		}
+		catch ( TimeoutException e ) {
+			return null;
+		}
 		catch ( HttpMessageParseException e ) {
 			throw new HttpReadException(e);
 		}
 	}
 	
-	private byte readByte() throws InterruptedException, HttpReadException {
+	private byte readByte() throws InterruptedException, TimeoutException, HttpReadException {
 		
 		if ( ! buffer.hasRemaining() ) {
 			
@@ -116,7 +119,7 @@ public class AsynchronousSocketChannelHttpRequestMessageReader extends AbstractH
 			}
 			catch ( TimeoutException e ) {
 				f.cancel(true);
-				throw new HttpReadException(e);
+				throw e;
 			}
 			catch ( ExecutionException e ) {
 				throw new HttpReadException(e.getCause());
@@ -126,7 +129,7 @@ public class AsynchronousSocketChannelHttpRequestMessageReader extends AbstractH
 		return buffer.get();
 	}
 	
-	private byte[] readLine() throws InterruptedException, HttpReadException {
+	private byte[] readLine() throws InterruptedException, TimeoutException, HttpReadException {
 		
 		try (
 				ByteArrayOutputStream os = new ByteArrayOutputStream(ByteArrayOutputStreamSize);
@@ -154,7 +157,7 @@ public class AsynchronousSocketChannelHttpRequestMessageReader extends AbstractH
 			HttpMessageRequestLine requestLine,
 			HttpMessageHeaderGroup headerGroup,
 			int contentLength)
-					throws InterruptedException, HttpReadException {
+					throws InterruptedException, TimeoutException, HttpReadException {
 		
 		if ( contentLength < 0 ) {
 			throw new HttpReadException("Content-Length < 0");
@@ -189,7 +192,8 @@ public class AsynchronousSocketChannelHttpRequestMessageReader extends AbstractH
 	private HttpRequestMessage readChunkMessage(
 			HttpMessageRequestLine requestLine,
 			List<String> headerLines)
-					throws InterruptedException, HttpReadException, HttpMessageParseException {
+					throws InterruptedException, TimeoutException,
+					HttpReadException, HttpMessageParseException {
 		
 		try (
 				ByteArrayOutputStream chunkData = new ByteArrayOutputStream(ByteArrayOutputStreamSize);

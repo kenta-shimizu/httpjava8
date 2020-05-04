@@ -72,6 +72,10 @@ public class HttpRequestMessageInformation {
 		return this.version;
 	}
 	
+	public HttpMessageHeaderGroup headerGroup() {
+		return this.requestMessage().headerGroup();
+	}
+	
 	public static HttpRequestMessageInformation from(
 			HttpRequestMessage message,
 			SocketAddress localAddress,

@@ -161,7 +161,7 @@ public class HttpVersion1p1AsynchronousSocketChannelServer extends AbstractHttpS
 											}
 											catch ( InterruptedException ignore ) {
 											}
-											catch ( HttpReadException | HttpWriteException | IOException e) {
+											catch ( HttpReadException | HttpWriteException | IOException e ) {
 												putLog(e);
 											}
 											
@@ -272,10 +272,6 @@ public class HttpVersion1p1AsynchronousSocketChannelServer extends AbstractHttpS
 		s.removeResponseMessageLogListener(this::putResponseMessageLog);
 		s.removeAccessLogListener(this::putAccessLog);
 		return super.removeServerService(s);
-	}
-	
-	private void putLog(Throwable t) {
-		putLog(new HttpLog(t));
 	}
 
 }

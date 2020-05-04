@@ -8,7 +8,9 @@ public interface HttpServer extends Closeable {
 	public void open() throws IOException;
 	
 	public boolean addServerService(HttpServerService s);
+	public void addServerService(int index, HttpServerService s);
 	public boolean removeServerService(HttpServerService s);
+	public HttpServerService removeServerService(int index);
 	
 	public boolean addLogListener(HttpLogListener l);
 	public boolean removeLogListener(HttpLogListener l);
