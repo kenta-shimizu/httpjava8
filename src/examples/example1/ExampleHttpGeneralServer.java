@@ -6,6 +6,7 @@ import java.nio.file.Paths;
 
 import com.shimizukenta.http.GeneralFileHttpVersion1p1ServerService;
 import com.shimizukenta.http.GeneralFileHttpVersion1p1ServerServiceConfig;
+import com.shimizukenta.http.HttpServer;
 import com.shimizukenta.http.HttpVersion1p1AsynchronousSocketChannelServer;
 import com.shimizukenta.http.HttpVersion1p1AsynchronousSocketChannelServerConfig;
 
@@ -35,7 +36,7 @@ public class ExampleHttpGeneralServer {
 			
 			
 			try (
-					HttpVersion1p1AsynchronousSocketChannelServer server = new HttpVersion1p1AsynchronousSocketChannelServer(serverConfig);
+					HttpServer server = new HttpVersion1p1AsynchronousSocketChannelServer(serverConfig);
 					) {
 				
 				server.addServerService(new GeneralFileHttpVersion1p1ServerService(generalFileConfig));
